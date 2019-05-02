@@ -1,0 +1,2 @@
+# Hotstart TBM 900 Autothrottle
+An X-plane 11 plugin that adds autothrottle capability to the Hotstart TBM 900, intended to provide funtionality similar to the autothrottle of Daher's new TBM 950. Including speed hold and torque profiles based on the data from the POH for TO/GA, climb, and max/normal/long range cruise modes.
