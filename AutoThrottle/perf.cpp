@@ -10,6 +10,14 @@ PerfTable::~PerfTable() {}
 
 #ifdef _DEBUG
 void PerfTable::testPerf() {
+	x_dref = "test_x";
+	y_dref = "test_y";
+	z_dref = "test_z";
+	dref_indices[2] = 0;
+	dref_flags[0] = DrefFlag_ISACorrect;
+	dref_flags[1] = DrefFlag_IsArray | DrefFlag_ISACorrect;
+	dref_flags[2] = DrefFlag_IsArray;
+
 	int numx = 5;
 	int numy = 10;
 	int initial_value = 1;
@@ -20,7 +28,9 @@ void PerfTable::testPerf() {
 	for (int i = 0; i < numy; i++) {
 		keys_y.push_back(i * 10);
 	}
-	data.resize(numx, std::vector<int>(numy, initial_value));
+	for (int i = 0; i < numx; i++) {
+		data.push_back(std::vector<int>(numy, initial_value + i));
+	}
 }
 #endif // _DEBUG
 

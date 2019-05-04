@@ -1,5 +1,18 @@
 {
     "maxCruise" : {
+        "x_dref" : "sim/cockpit2/temperature/outside_air_temp_degc",
+        "y_dref" : "sim/cockpit2/gauges/indicators/altitude_ft_pilot",
+        "z_dref" : "sim/flightmodel/engine/ENGN_TRQ",
+        "dref_indices": {
+            "value0": -1,
+            "value1": -1,
+            "value2": 0
+        },
+        "dref_flags": {
+            "value0": 2,
+            "value1": 0,
+            "value2": 1
+        },
         "keys_x" : [
             -20,
             -10,
@@ -165,6 +178,19 @@
         ]
     },
     "normCruise" : {
+        "x_dref" : "sim/cockpit2/temperature/outside_air_temp_degc",
+        "y_dref" : "sim/cockpit2/gauges/indicators/altitude_ft_pilot",
+        "z_dref" : "sim/flightmodel/engine/ENGN_TRQ",
+        "dref_indices": {
+            "value0": -1,
+            "value1": -1,
+            "value2": 0
+        },
+        "dref_flags": {
+            "value0": 2,
+            "value1": 0,
+            "value2": 1
+        },
         "keys_x" : [
             -20,
             -10,
@@ -330,10 +356,23 @@
         ]
     },
     "longRangeCruise" : {
+        "x_dref" : "sim/flightmodel/weight/m_total",
+        "y_dref" : "sim/cockpit2/gauges/indicators/altitude_ft_pilot",
+        "z_dref" : "sim/flightmodel/engine/ENGN_TRQ",
+        "dref_indices": {
+            "value0": -1,
+            "value1": -1,
+            "value2": 0
+        },
+        "dref_flags": {
+            "value0": 0,
+            "value1": 0,
+            "value2": 1
+        },
         "key_x" : [
-            5500,
-            6300,
-            7100
+            2495,
+            2858,
+            3220
         ],
         "key_y" :[
             15000,
