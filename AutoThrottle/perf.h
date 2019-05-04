@@ -31,7 +31,7 @@ public:
 #endif // _DEBUG
 
 
-	int getValue(int x, int y);
+	float getValue(float x, float y);
 
 	template<class Archive>
 	void serialize(Archive & ar) {

@@ -35,7 +35,7 @@ void PerfTable::testPerf() {
 #endif // _DEBUG
 
 
-int PerfTable::getValue(int x, int y) {
+float PerfTable::getValue(float x, float y) {
 	int x_lower_index = -1, x_lower_value, x_upper_index = -1, x_upper_value;
 	for (int i = 0; i < keys_x.size(); i++) {
 		if (keys_x[i] < x) {
@@ -62,7 +62,8 @@ int PerfTable::getValue(int x, int y) {
 		}
 	}
 
-	int q11, q12, q21, q22, r1, r2;
+	int q11, q12, q21, q22;
+	float r1, r2;
 
 	// x < keys_x[0]
 	if (x_lower_index < 0) {
@@ -71,7 +72,7 @@ int PerfTable::getValue(int x, int y) {
 	}
 	// x > keys_x[-1]
 	if (x_upper_index < 0) {
-		x_upper_index = keys_x.size() - 1;
+		x_upper_index = static_cast<int>(keys_x.size()) - 1;
 		x_upper_value = keys_x[x_upper_index];
 	}
 	// y < keys_y[0]
@@ -81,7 +82,7 @@ int PerfTable::getValue(int x, int y) {
 	}
 	// y > keys_y[-1]
 	if (y_upper_index < 0) {
-		y_upper_index = keys_y.size() - 1;
+		y_upper_index = static_cast<int>(keys_y.size()) - 1;
 		y_upper_value = keys_y[y_upper_index];
 	}
 

@@ -92,6 +92,8 @@ PLUGIN_API int XPluginStart(char* outName, char* outSig, char* outDesc) {
 
 	std::stringstream ss;
 
+	ss << p.getValue(2.5, 35) << std::endl;
+
 	cereal::JSONOutputArchive output(ss);
 	output(cereal::make_nvp("testperf", p));
 	ss << std::endl;
