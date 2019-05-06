@@ -4,11 +4,13 @@
 
 #pragma once
 
+#include <map>
 #include <string>
 #include <vector>
 
-#include <cereal/types/vector.hpp>
+#include <cereal/types/map.hpp>
 #include <cereal/types/string.hpp>
+#include <cereal/types/vector.hpp>
 
 enum DrefFlag {
 	DrefFlag_IsArray = 1,
@@ -48,4 +50,38 @@ private:
 	std::vector<int> keys_x;
 	std::vector<int> keys_y;
 	std::vector<std::vector<int>> data;
+};
+
+class Performance {
+public:
+	std::string icao;
+	std::vector<std::string> modes;
+	std::map <std::string, PerfTable> tables;
+
+	Performance();
+	~Performance();
+
+#ifdef _DEBUG
+	void test() {
+		tables["TST"] = PerfTable();
+		tables["TST"].testPerf();
+	}
+#endif // _DEBUG
+
+
+	template<class Archive>
+	void save(Archive &ar) const {
+		ar( CEREAL_NVP(icao),
+			CEREAL_NVP(tables));
+	}
+
+	template<class Archive>
+	void load(Archive &ar) {
+		ar(CEREAL_NVP(icao),
+			CEREAL_NVP(tables));
+		modes.clear();
+		for (auto& pair : tables) {
+			modes.push_back(pair.first);
+		}
+	}
 };

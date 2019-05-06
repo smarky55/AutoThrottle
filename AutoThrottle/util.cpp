@@ -5,9 +5,9 @@
 #include "util.h"
 
 float getIsaDev(float altFeet, float tempC) {
-	const float ISA_SL_TEMP = 15.0; // degrees Celsius
+	const float ISA_SL_TEMP = 15.0f; // degrees Celsius
 	const float ISA_TROPOPAUSE_HEIGHT = 36089; // ft MSL
-	const float ISA_LAPSE_RATE = 1.98; // degrees Celsius per 1000ft
+	const float ISA_LAPSE_RATE = 1.98f; // degrees Celsius per 1000ft
 
 	if (altFeet < ISA_TROPOPAUSE_HEIGHT) {
 		return ISA_SL_TEMP - ISA_LAPSE_RATE * (altFeet / 1000.0f);

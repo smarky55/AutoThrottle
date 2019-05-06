@@ -118,7 +118,8 @@
       <AdditionalDependencies>XPWidgets_64.lib;XPLM_64.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(SolutionDir)$(Platform)\$(Configuration)\$(ProjectName)" "F:\Programs\Steam\SteamApps\common\X-Plane 11\Resources\plugins\$(ProjectName)" /E /I /Y</Command>
+      <Command>xcopy "$(SolutionDir)tbm9.perf"  "$(SolutionDir)$(Platform)\$(Configuration)\$(ProjectName)" /I /Y
+xcopy "$(SolutionDir)$(Platform)\$(Configuration)\$(ProjectName)" "F:\Programs\Steam\SteamApps\common\X-Plane 11\Resources\plugins\$(ProjectName)" /E /I /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

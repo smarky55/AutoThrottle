@@ -97,3 +97,7 @@ float PerfTable::getValue(float x, float y) {
 	return r1 + (y - y_lower_value) * ((r2 - r1) / (y_upper_value - y_lower_value));
 
 }
+
+Performance::Performance() {}
+
+Performance::~Performance() {}

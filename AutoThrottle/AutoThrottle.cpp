@@ -87,12 +87,12 @@ PLUGIN_API int XPluginStart(char* outName, char* outSig, char* outDesc) {
 	XPLMSetWindowTitle(window, "Test window");
 
 #ifdef _DEBUG
-	PerfTable p;
-	p.testPerf();
+	Performance p;
+	p.test();
 
 	std::stringstream ss;
 
-	ss << p.getValue(2.5, 35) << std::endl;
+	ss << p.tables["TST"].getValue(2.5, 35) << std::endl;
 
 	cereal::JSONOutputArchive output(ss);
 	output(cereal::make_nvp("testperf", p));
