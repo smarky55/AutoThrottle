@@ -12,6 +12,10 @@
 #include <cereal/types/string.hpp>
 #include <cereal/types/vector.hpp>
 
+#include "XPLM/XPLMDataAccess.h"
+
+#include "util.h"
+
 enum DrefFlag {
 	DrefFlag_IsArray = 1,
 	DrefFlag_ISACorrect = 2
@@ -22,6 +26,7 @@ public:
 	std::string x_dref;
 	std::string y_dref;
 	std::string z_dref;
+	XPLMDataRef xDrefID, yDrefID, zDrefID;
 	int dref_indices[3] = { -1, -1, -1 };
 	int dref_flags[3] = { 0, 0, 0 };
 
@@ -32,8 +37,10 @@ public:
 	void testPerf();
 #endif // _DEBUG
 
+	void fetchDrefs();
 
 	float getValue(float x, float y);
+	float getValue();
 
 	template<class Archive>
 	void serialize(Archive & ar) {
@@ -82,6 +89,7 @@ public:
 		modes.clear();
 		for (auto& pair : tables) {
 			modes.push_back(pair.first);
+			pair.second.fetchDrefs();
 		}
 	}
 };

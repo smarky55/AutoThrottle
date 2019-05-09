@@ -4,6 +4,10 @@
 
 #include "util.h"
 
+float mToFt(float m) {
+	return m * 3.28084f;
+}
+
 float getIsaDev(float altFeet, float tempC) {
 	const float ISA_SL_TEMP = 15.0f; // degrees Celsius
 	const float ISA_TROPOPAUSE_HEIGHT = 36089; // ft MSL

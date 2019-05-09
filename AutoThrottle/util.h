@@ -4,5 +4,6 @@
 
 #pragma once
 
+float mToFt(float m);
 
 float getIsaDev(float altFeet, float tempC);

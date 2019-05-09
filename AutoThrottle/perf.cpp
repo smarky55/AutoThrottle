@@ -35,6 +35,12 @@ void PerfTable::testPerf() {
 #endif // _DEBUG
 
 
+void PerfTable::fetchDrefs() {
+	xDrefID = XPLMFindDataRef(x_dref.c_str());
+	yDrefID = XPLMFindDataRef(y_dref.c_str());
+	zDrefID = XPLMFindDataRef(z_dref.c_str());
+}
+
 float PerfTable::getValue(float x, float y) {
 	int x_lower_index = -1, x_lower_value, x_upper_index = -1, x_upper_value;
 	for (int i = 0; i < keys_x.size(); i++) {
@@ -96,6 +102,33 @@ float PerfTable::getValue(float x, float y) {
 
 	return r1 + (y - y_lower_value) * ((r2 - r1) / (y_upper_value - y_lower_value));
 
+}
+
+float PerfTable::getValue() {
+	static XPLMDataRef elevationDref = XPLMFindDataRef("sim/flightmodel/position/elevation");
+	float x, y;
+
+	if (dref_flags[0] & DrefFlag_IsArray) {
+		XPLMGetDatavf(xDrefID, &x, dref_indices[0], 1);
+	}
+	else {
+		x = XPLMGetDataf(xDrefID);
+	}
+	if (dref_flags[0] & DrefFlag_ISACorrect) {
+		x = getIsaDev(mToFt(XPLMGetDatad(elevationDref)), x);
+	}
+
+	if (dref_flags[1] & DrefFlag_IsArray) {
+		XPLMGetDatavf(yDrefID, &y, dref_indices[1], 1);
+	}
+	else {
+		y = XPLMGetDataf(yDrefID);
+	}
+	if (dref_flags[1] & DrefFlag_ISACorrect) {
+		y = getIsaDev(mToFt(XPLMGetDatad(elevationDref)), y);
+	}
+
+	return getValue(x, y);
 }
 
 Performance::Performance() {}
