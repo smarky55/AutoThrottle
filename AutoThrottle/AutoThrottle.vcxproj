@@ -163,12 +163,14 @@ xcopy "$(SolutionDir)$(Platform)\$(Configuration)\$(ProjectName)" "F:\Programs\S
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ap_core.h" />
     <ClInclude Include="perf.h" />
     <ClInclude Include="pid.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="util.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ap_core.cpp" />
     <ClCompile Include="AutoThrottle.cpp" />
     <ClCompile Include="perf.cpp" />
     <ClCompile Include="pid.cpp" />

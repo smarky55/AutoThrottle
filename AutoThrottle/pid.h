@@ -16,6 +16,11 @@ public:
 	void setTarget(float target);
 
 	void setGains(float p, float i, float d);
+	void getGains(float* p, float* i, float* d) {
+		*p = kP;
+		*i = kI;
+		*d = kD;
+	}
 
 	void resetIntegral();
 

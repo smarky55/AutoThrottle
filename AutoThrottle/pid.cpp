@@ -33,7 +33,7 @@ float PID::update(float processValue, float dt) {
 }
 
 void PID::setTarget(float target) {
-	setPoint = integral;
+	setPoint = target;
 }
 
 void PID::setGains(float p, float i, float d) {

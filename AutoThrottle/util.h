@@ -3,7 +3,10 @@
 // file, You can obtain one at http ://mozilla.org/MPL/2.0/.
 
 #pragma once
+#include <algorithm>
 
 float mToFt(float m);
 
 float getIsaDev(float altFeet, float tempC);
+
+float clamp(float var, float min, float max);

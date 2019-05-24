@@ -19,3 +19,7 @@ float getIsaDev(float altFeet, float tempC) {
 		return -56.5;
 	}
 }
+
+float clamp(float var, float min, float max) {
+	return std::max(min, std::min(max, var));
+}
