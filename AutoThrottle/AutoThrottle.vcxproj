@@ -23,32 +23,32 @@
     <ProjectGuid>{72AB03E7-3508-44DF-AF55-F77266607510}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>AutoThrottle</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -108,18 +108,18 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;AUTOTHROTTLE_EXPORTS;_WINDOWS;_USRDLL;IBM=1;XPLM200;XPLM210;XPLM300;XPLM301;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>F:\Sam\Documents\libs\xplane_sdk\CHeaders;F:\Sam\Documents\libs\cereal-1.2.2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\smark\source\lib\xplane_sdk\CHeaders;C:\Users\smark\source\lib\cereal-1.2.2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>F:\Sam\Documents\libs\xplane_sdk\Libraries\Win;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\smark\source\lib\xplane_sdk\Libraries\Win;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>XPWidgets_64.lib;XPLM_64.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(SolutionDir)tbm9.perf"  "$(SolutionDir)$(Platform)\$(Configuration)\$(ProjectName)" /I /Y
-xcopy "$(SolutionDir)$(Platform)\$(Configuration)\$(ProjectName)" "F:\Programs\Steam\SteamApps\common\X-Plane 11\Resources\plugins\$(ProjectName)" /E /I /Y</Command>
+xcopy "$(SolutionDir)$(Platform)\$(Configuration)\$(ProjectName)" "C:\Program Files (x86)\Steam\SteamApps\common\X-Plane 11\Resources\plugins\$(ProjectName)" /E /I /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -164,16 +164,17 @@ xcopy "$(SolutionDir)$(Platform)\$(Configuration)\$(ProjectName)" "F:\Programs\S
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="ap_core.h" />
-    <ClInclude Include="perf.h" />
-    <ClInclude Include="pid.h" />
+    <ClInclude Include="AutoPilotPlugin.h" />
+    <ClInclude Include="Performance.h" />
+    <ClInclude Include="PID.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="util.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ap_core.cpp" />
     <ClCompile Include="AutoThrottle.cpp" />
-    <ClCompile Include="perf.cpp" />
-    <ClCompile Include="pid.cpp" />
+    <ClCompile Include="Performance.cpp" />
+    <ClCompile Include="PID.cpp" />
     <ClCompile Include="util.cpp" />
   </ItemGroup>
   <ItemGroup>
