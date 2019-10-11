@@ -54,6 +54,8 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 #include "cereal/archives/json.hpp"
 
 #include "AutoThrottlePlugin.h"
+#include "Menu.h"
+#include "MenuItem.h"
 
 // Window handle
 static XPLMWindowID window;
@@ -143,15 +145,33 @@ PLUGIN_API int XPluginStart(char* outName, char* outSig, char* outDesc) {
 	
 	plugin->setupDatarefs();
 
-	XPLMMenuID myMenu;
+	/*XPLMMenuID myMenu;
 	int myMenuSubItem;
 
 	myMenuSubItem = XPLMAppendMenuItem(XPLMFindPluginsMenu(), "AutoThrottle", NULL, 0);
 	myMenu = XPLMCreateMenu("AutoThrottle", XPLMFindPluginsMenu(), myMenuSubItem, MenuHandler, NULL);
 	XPLMAppendMenuItem(myMenu, "Test", reinterpret_cast<void*>(1), 0);
 	XPLMAppendMenuItem(myMenu, "Settings", reinterpret_cast<void*>(2), 0);
-	XPLMAppendMenuItem(myMenu, "Debug flight loops", reinterpret_cast<void*>(3), 0);
+	XPLMAppendMenuItem(myMenu, "Debug flight loops", reinterpret_cast<void*>(3), 0);*/
 	
+	MenuItem menu("AutoThrottle", XPLMFindPluginsMenu());
+	Menu* list = menu.menu();
+	list->appendMenuItem("Test")->setOnClickHandler([](void* itemRef) {
+			if (plugin->isEnabled()) {
+				plugin->deactivateAutoThrottle();
+			} else {
+				plugin->pid().setTarget(1500.0f);
+				plugin->activateAutoThrottle();
+			}
+		});
+	list->appendMenuItem("Settings")->setOnClickHandler([](void* itemRef) {
+			if (XPIsWidgetVisible(settingsWidget)) {
+				XPHideWidget(settingsWidget);
+			} else {
+				XPShowWidget(settingsWidget);
+			}
+		});
+
 	plugin->setupFlightLoop();
 
 	plugin->pid().setGains(1.0f, 0.0f, 0.0f);

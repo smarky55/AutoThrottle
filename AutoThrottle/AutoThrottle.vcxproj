@@ -164,6 +164,8 @@ xcopy "$(SolutionDir)$(Platform)\$(Configuration)\$(ProjectName)" "C:\Program Fi
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AutoThrottlePlugin.h" />
+    <ClInclude Include="Menu.h" />
+    <ClInclude Include="MenuItem.h" />
     <ClInclude Include="Performance.h" />
     <ClInclude Include="PID.h" />
     <ClInclude Include="targetver.h" />
@@ -172,6 +174,8 @@ xcopy "$(SolutionDir)$(Platform)\$(Configuration)\$(ProjectName)" "C:\Program Fi
   <ItemGroup>
     <ClCompile Include="AutoThrottlePlugin.cpp" />
     <ClCompile Include="AutoThrottle.cpp" />
+    <ClCompile Include="Menu.cpp" />
+    <ClCompile Include="MenuItem.cpp" />
     <ClCompile Include="Performance.cpp" />
     <ClCompile Include="PID.cpp" />
     <ClCompile Include="util.cpp" />
