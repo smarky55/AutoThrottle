@@ -28,6 +28,7 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 #include <algorithm>
 #include <iostream>
 #include <fstream>
+#include <memory>
 #include <string>
 #include <sstream>
 
@@ -52,7 +53,7 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 
 #include "cereal/archives/json.hpp"
 
-#include "ap_core.h"
+#include "AutoThrottlePlugin.h"
 
 // Window handle
 static XPLMWindowID window;
@@ -65,21 +66,14 @@ int dummy_wheel_handler(XPLMWindowID in_window_id, int x, int y, int wheel, int 
 void dummy_key_handler(XPLMWindowID in_window_id, char key, XPLMKeyFlags flags, char virtual_key, void* in_refcon, int losing_focus) {}
 
 
-
 void MenuHandler(void* inMenuRef, void* inItemRef);
-
-#ifdef _DEBUG
-XPLMFlightLoopID debug_beforeFlightLoop;
-float debug_beforeFlightLoopCallback(float inTimeSinceLastCall, float inTimeSinceLastFlightLoop, int inCounter, void* inRefcon);
-XPLMFlightLoopID debug_afterFlightLoop;
-float debug_afterFlightLoopCallback(float inTimeSinceLastCall, float inTimeSinceLastFlightLoop, int inCounter, void* inRefcon);
-#endif // _DEBUG
 
 
 void setupWidgets();
 XPWidgetID settingsWidget;
 XPWidgetID settingsSubWidgets[7];
 
+std::unique_ptr<AutoThrottlePlugin> plugin;
 
 
 PLUGIN_API int XPluginStart(char* outName, char* outSig, char* outDesc) {
@@ -90,6 +84,8 @@ PLUGIN_API int XPluginStart(char* outName, char* outSig, char* outDesc) {
 	XPLMEnableFeature("XPLM_USE_NATIVE_WIDGET_WINDOWS", true);
 	
 	XPLMDebugString("[AutoThrottle] Init\n");
+
+	plugin = std::make_unique<AutoThrottlePlugin>();
 	
 // Test window
 #ifdef _DEBUG
@@ -143,24 +139,9 @@ PLUGIN_API int XPluginStart(char* outName, char* outSig, char* outDesc) {
 	perfPath.append("Resources\\plugins\\AutoThrottle\\tbm9.perf");
 	XPLMDebugString(perfPath.c_str());
 
-	std::ifstream perfFile(perfPath);
-
-
-	try {
-		cereal::JSONInputArchive perfArchive(perfFile);
-		perfArchive(perf);
-	}
-	catch (const std::exception& e) {
-		XPLMDebugString(e.what());
-	}
-
-	perfFile.close();
+	plugin->loadPerformance(perfPath);
 	
-	timeDref = XPLMFindDataRef("sim/time/total_running_time_sec");
-	throttleDref = XPLMFindDataRef("sim/cockpit2/engine/actuators/throttle_ratio_all");
-	trqDref = XPLMFindDataRef("sim/flightmodel/engine/ENGN_TRQ");
-
-	dJoyAxisAssignments = XPLMFindDataRef("sim/joystick/joystick_axis_assignments");
+	plugin->setupDatarefs();
 
 	XPLMMenuID myMenu;
 	int myMenuSubItem;
@@ -171,21 +152,9 @@ PLUGIN_API int XPluginStart(char* outName, char* outSig, char* outDesc) {
 	XPLMAppendMenuItem(myMenu, "Settings", reinterpret_cast<void*>(2), 0);
 	XPLMAppendMenuItem(myMenu, "Debug flight loops", reinterpret_cast<void*>(3), 0);
 	
-	setupFlightLoop();
+	plugin->setupFlightLoop();
 
-#ifdef _DEBUG
-	XPLMCreateFlightLoop_t createFlightLoop;
-	createFlightLoop.structSize = sizeof(XPLMCreateFlightLoop_t);
-	createFlightLoop.phase = xplm_FlightLoop_Phase_BeforeFlightModel;
-	createFlightLoop.callbackFunc = debug_beforeFlightLoopCallback;
-	debug_beforeFlightLoop = XPLMCreateFlightLoop(&createFlightLoop);
-
-	createFlightLoop.phase = xplm_FlightLoop_Phase_AfterFlightModel;
-	createFlightLoop.callbackFunc = debug_afterFlightLoopCallback;
-	debug_afterFlightLoop = XPLMCreateFlightLoop(&createFlightLoop);
-#endif // _DEBUG
-
-	trqPid.setGains(1.0f, 0.0f, 0.0f);
+	plugin->pid().setGains(1.0f, 0.0f, 0.0f);
 
 	setupWidgets();
 
@@ -195,12 +164,10 @@ PLUGIN_API int XPluginStart(char* outName, char* outSig, char* outDesc) {
 PLUGIN_API void XPluginStop(void) {
 
 	XPDestroyWidget(settingsWidget, 1);
-	XPLMDestroyFlightLoop(flightLoop);
+
+	plugin.reset(nullptr);
 
 #ifdef _DEBUG
-
-	XPLMDestroyFlightLoop(debug_beforeFlightLoop);
-	XPLMDestroyFlightLoop(debug_afterFlightLoop);
 
 	XPLMDestroyWindow(window);
 	window = NULL;
@@ -247,12 +214,12 @@ void draw_hello_world(XPLMWindowID inID, void* inRefcon) {
 void MenuHandler(void* inMenuRef, void* inItemRef) {
 	switch (reinterpret_cast<intptr_t>(inItemRef)) {
 	case 1: // Testing
-		if (bAutoThrottleEnabled) {
-			deactivateAutoThrottle();
+		if (plugin->isEnabled()) {
+			plugin->deactivateAutoThrottle();
 		}
 		else {
-			trqPid.setTarget(1500.0f);
-			activateAutoThrottle();
+			plugin->pid().setTarget(1500.0f);
+			plugin->activateAutoThrottle();
 		}
 		break;
 	case 2:
@@ -263,50 +230,10 @@ void MenuHandler(void* inMenuRef, void* inItemRef) {
 			XPShowWidget(settingsWidget);
 		}
 		break;
-	case 3:
-#ifdef _DEBUG
-		if (debug_flightLoopEnabled) {
-			XPLMScheduleFlightLoop(debug_beforeFlightLoop, 0.0f, false);
-			XPLMScheduleFlightLoop(debug_afterFlightLoop, 0.0f, false);
-			debug_flightLoopEnabled = false;
-			debug_flightloopTest = false;
-		}
-		else {
-			XPLMScheduleFlightLoop(debug_beforeFlightLoop, -1.0f, false);
-			XPLMScheduleFlightLoop(debug_afterFlightLoop, -1.0f, false);
-			debug_flightLoopEnabled = true;
-		}
-#endif // _DEBUG
-		break;
 	default:
 		break;
 	}
 }
-
-
-#ifdef _DEBUG
-float debug_beforeFlightLoopCallback(float inTimeSinceLastCall, float inTimeSinceLastFlightLoop, int inCounter, void* inRefcon) {
-	
-	if (debug_flightloopTest && XPLMGetDataf(throttleDref) != 0.2f) {
-		XPLMDebugString("[Autothrottle] Before flight loop.\n");
-	}
-	XPLMSetDataf(throttleDref, 0.2f);
-	debug_flightloopTest = true;
-
-	return -1.0;
-}
-
-float debug_afterFlightLoopCallback(float inTimeSinceLastCall, float inTimeSinceLastFlightLoop, int inCounter, void* inRefcon) {
-
-	if (debug_flightloopTest && XPLMGetDataf(throttleDref) != 0.2f) {
-		XPLMDebugString("[Autothrottle] After flight loop.\n");
-	}
-	XPLMSetDataf(throttleDref, 0.2f);
-	debug_flightloopTest = true;
-
-	return -1.0;
-}
-#endif // _DEBUG
 
 
 int settingsWidgetFunc(XPWidgetMessage inMessage, XPWidgetID inWidget, intptr_t param1, intptr_t param2) {
@@ -333,10 +260,10 @@ int settingsWidgetFunc(XPWidgetMessage inMessage, XPWidgetID inWidget, intptr_t 
 				num = buffer;
 				kD = std::stof(num);
 
-				trqPid.setGains(kP, kI, kD);
+				plugin->pid().setGains(kP, kI, kD);
 #ifdef _DEBUG
 				std::stringstream ss;
-				trqPid.getGains(&kP, &kI, &kD);
+				plugin->pid().getGains(&kP, &kI, &kD);
 				ss << "Pid gains: " << kP << " " << kI << " " << kD << std::endl;
 				XPLMDebugString(ss.str().c_str());
 #endif // _DEBUG
@@ -368,7 +295,7 @@ void setupWidgets() {
 	XPAddWidgetCallback(settingsWidget, settingsWidgetFunc);
 
 	float kP, kI, kD;
-	trqPid.getGains(&kP, &kI, &kD);
+	plugin->pid().getGains(&kP, &kI, &kD);
 
 	settingsSubWidgets[0] = XPCreateWidget(settingsLeft + 10, settingsBottom + 50, settingsLeft + 30, settingsBottom + 40, 1, "kP", 0, settingsWidget, xpWidgetClass_Caption);
 	settingsSubWidgets[1] = XPCreateWidget(settingsLeft + 30, settingsBottom + 50, settingsLeft + 70, settingsBottom + 35, 1, std::to_string(kP).c_str(), 0, settingsWidget, xpWidgetClass_TextField);

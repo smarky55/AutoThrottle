@@ -12,8 +12,7 @@
 #include <cereal/types/string.hpp>
 #include <cereal/types/vector.hpp>
 
-#include "XPLM/XPLMDataAccess.h"
-
+using XPLMDataRef = void*;
 
 enum DrefFlag {
 	DrefFlag_IsArray = 1,

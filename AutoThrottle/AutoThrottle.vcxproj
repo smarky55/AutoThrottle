@@ -150,7 +150,7 @@ xcopy "$(SolutionDir)$(Platform)\$(Configuration)\$(ProjectName)" "C:\Program Fi
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;AUTOTHROTTLE_EXPORTS;_WINDOWS;_USRDLL;IBM=1;XPLM200;XPLM210;XPLM300;XPLM301;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>F:\Sam\Documents\libs\xplane_sdk\CHeaders;F:\Sam\Documents\libs\cereal-1.2.2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\smark\source\lib\xplane_sdk\CHeaders;C:\Users\smark\source\lib\cereal-1.2.2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -159,19 +159,18 @@ xcopy "$(SolutionDir)$(Platform)\$(Configuration)\$(ProjectName)" "C:\Program Fi
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>XPWidgets_64.lib;XPLM_64.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>F:\Sam\Documents\libs\xplane_sdk\Libraries\Win;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\smark\source\lib\xplane_sdk\Libraries\Win;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="ap_core.h" />
-    <ClInclude Include="AutoPilotPlugin.h" />
+    <ClInclude Include="AutoThrottlePlugin.h" />
     <ClInclude Include="Performance.h" />
     <ClInclude Include="PID.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="util.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ap_core.cpp" />
+    <ClCompile Include="AutoThrottlePlugin.cpp" />
     <ClCompile Include="AutoThrottle.cpp" />
     <ClCompile Include="Performance.cpp" />
     <ClCompile Include="PID.cpp" />

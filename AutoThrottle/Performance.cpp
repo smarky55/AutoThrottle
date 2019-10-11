@@ -4,6 +4,8 @@
 
 #include "Performance.h"
 
+#include "XPLM/XPLMDataAccess.h"
+
 #include "util.h"
 
 PerfTable::PerfTable() {}
@@ -44,7 +46,10 @@ void PerfTable::fetchDrefs() {
 }
 
 float PerfTable::getValue(float x, float y) {
-	int x_lower_index = -1, x_lower_value, x_upper_index = -1, x_upper_value;
+	int x_lower_index = -1;
+	int x_upper_index = -1;
+	int x_lower_value;
+	int x_upper_value;
 	for (int i = 0; i < keys_x.size(); i++) {
 		if (keys_x[i] < x) {
 			x_lower_index = i;
@@ -57,7 +62,10 @@ float PerfTable::getValue(float x, float y) {
 		}
 	}
 
-	int y_lower_index = -1, y_lower_value, y_upper_index = -1, y_upper_value;
+	int y_lower_index = -1;
+	int y_upper_index = -1;
+	int y_lower_value;
+	int y_upper_value;
 	for (int i = 0; i < keys_y.size(); i++) {
 		if (keys_y[i] < y) {
 			y_lower_index = i;
@@ -98,6 +106,8 @@ float PerfTable::getValue(float x, float y) {
 	q12 = data[x_lower_index][y_upper_index];
 	q21 = data[x_upper_index][y_lower_index];
 	q22 = data[x_upper_index][y_upper_index];
+
+	if (x_upper_value == x_lower_value || y_upper_value == y_lower_value) return 0.0f;
 
 	r1 = q11 + (x - x_lower_value) * ((q21 - q11) / (x_upper_value - x_lower_value));
 	r2 = q12 + (x - x_lower_value) * ((q22 - q12) / (x_upper_value - x_lower_value));
