@@ -10,7 +10,7 @@
 
 Menu::Menu(std::string name, const MenuItem* parentItem)
 {
-	m_menuId = XPLMCreateMenu(name.c_str(), parentItem->xpParentMenu(), parentItem->menuItem(), menuCallback, 0);
+	m_menuId = XPLMCreateMenu(name.c_str(), parentItem->xpParentMenu(), parentItem->menuItem(), menuCallback, this);
 }
 
 Menu::~Menu()

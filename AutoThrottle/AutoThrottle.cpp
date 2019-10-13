@@ -1,4 +1,4 @@
-﻿// This Source Code Form is subject to the terms of the Mozilla Public
+// This Source Code Form is subject to the terms of the Mozilla Public
 // License, v.2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
@@ -144,18 +144,8 @@ PLUGIN_API int XPluginStart(char* outName, char* outSig, char* outDesc) {
 	plugin->loadPerformance(perfPath);
 	
 	plugin->setupDatarefs();
-
-	/*XPLMMenuID myMenu;
-	int myMenuSubItem;
-
-	myMenuSubItem = XPLMAppendMenuItem(XPLMFindPluginsMenu(), "AutoThrottle", NULL, 0);
-	myMenu = XPLMCreateMenu("AutoThrottle", XPLMFindPluginsMenu(), myMenuSubItem, MenuHandler, NULL);
-	XPLMAppendMenuItem(myMenu, "Test", reinterpret_cast<void*>(1), 0);
-	XPLMAppendMenuItem(myMenu, "Settings", reinterpret_cast<void*>(2), 0);
-	XPLMAppendMenuItem(myMenu, "Debug flight loops", reinterpret_cast<void*>(3), 0);*/
 	
-	MenuItem menu("AutoThrottle", XPLMFindPluginsMenu());
-	Menu* list = menu.menu();
+	Menu* list = plugin->menu().menu();
 	list->appendMenuItem("Test")->setOnClickHandler([](void* itemRef) {
 			if (plugin->isEnabled()) {
 				plugin->deactivateAutoThrottle();
@@ -174,7 +164,7 @@ PLUGIN_API int XPluginStart(char* outName, char* outSig, char* outDesc) {
 
 	plugin->setupFlightLoop();
 
-	plugin->pid().setGains(1.0f, 0.0f, 0.0f);
+	plugin->pid().setGains(0.01f, 0.0f, 0.0f);
 
 	setupWidgets();
 
@@ -203,9 +193,6 @@ PLUGIN_API void XPluginReceiveMessage(XPLMPluginID inFrom, int inMsg, void* inPa
 float debug_pidspeed;
 float debug_trq;
 float debug_throttle;
-
-bool debug_flightloopTest = false;
-bool debug_flightLoopEnabled = false;
 #endif // _DEBUG
 
 

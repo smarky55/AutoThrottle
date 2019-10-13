@@ -7,6 +7,7 @@
 #include <cereal/archives/json.hpp>
 
 #include <XPLM/XPLMDataAccess.h>
+#include <XPLM/XPLMMenus.h>
 #include <XPLM/XPLMProcessing.h>
 #include <XPLM/XPLMUtilities.h>
 
@@ -27,7 +28,8 @@ AutoThrottlePlugin::AutoThrottlePlugin()
 	m_currentMode(-1),
 	m_flightLoop(nullptr),
 	m_lastTime(0),
-	m_throttle(0)
+	m_throttle(0),
+	m_menu("AutoThrottle", XPLMFindPluginsMenu())
 {
 }
 
@@ -149,6 +151,11 @@ PID& AutoThrottlePlugin::pid()
 const PID& AutoThrottlePlugin::pid() const
 {
 	return m_primaryPID;
+}
+
+MenuItem& AutoThrottlePlugin::menu()
+{
+	return m_menu;
 }
 
 bool AutoThrottlePlugin::isEnabled() const

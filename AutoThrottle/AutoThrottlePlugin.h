@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "MenuItem.h"
 #include "Performance.h"
 #include "PID.h"
 
@@ -42,6 +43,8 @@ public:
 	PID& pid();
 	const PID& pid() const;
 
+	MenuItem& menu();
+
 	bool isEnabled() const;
 	void isEnabled(bool enabled);
 
@@ -57,6 +60,7 @@ private:
 
 	Performance m_performance;
 	PID m_primaryPID;
+	MenuItem m_menu;
 
 	bool m_isEnabled;
 	int m_currentMode;
