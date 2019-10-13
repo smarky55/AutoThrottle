@@ -170,6 +170,8 @@ xcopy "$(SolutionDir)$(Platform)\$(Configuration)\$(ProjectName)" "C:\Program Fi
     <ClInclude Include="PID.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="util.h" />
+    <ClInclude Include="Widget.h" />
+    <ClInclude Include="WidgetRegistry.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AutoThrottlePlugin.cpp" />
@@ -179,6 +181,8 @@ xcopy "$(SolutionDir)$(Platform)\$(Configuration)\$(ProjectName)" "C:\Program Fi
     <ClCompile Include="Performance.cpp" />
     <ClCompile Include="PID.cpp" />
     <ClCompile Include="util.cpp" />
+    <ClCompile Include="Widget.cpp" />
+    <ClCompile Include="WidgetRegistry.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\tbm9.perf" />

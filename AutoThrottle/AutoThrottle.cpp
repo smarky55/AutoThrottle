@@ -1,4 +1,4 @@
-// This Source Code Form is subject to the terms of the Mozilla Public
+﻿// This Source Code Form is subject to the terms of the Mozilla Public
 // License, v.2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
@@ -56,6 +56,8 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 #include "AutoThrottlePlugin.h"
 #include "Menu.h"
 #include "MenuItem.h"
+#include "Widget.h"
+#include "WidgetRegistry.h"
 
 // Window handle
 static XPLMWindowID window;
@@ -67,15 +69,10 @@ XPLMCursorStatus dummy_cursor_status_handler(XPLMWindowID in_window_id, int x, i
 int dummy_wheel_handler(XPLMWindowID in_window_id, int x, int y, int wheel, int clicks, void* in_refcon) { return 0; }
 void dummy_key_handler(XPLMWindowID in_window_id, char key, XPLMKeyFlags flags, char virtual_key, void* in_refcon, int losing_focus) {}
 
-
-void MenuHandler(void* inMenuRef, void* inItemRef);
-
-
 void setupWidgets();
-XPWidgetID settingsWidget;
-XPWidgetID settingsSubWidgets[7];
 
 std::unique_ptr<AutoThrottlePlugin> plugin;
+std::unique_ptr<Widget> settingsWidget;
 
 
 PLUGIN_API int XPluginStart(char* outName, char* outSig, char* outDesc) {
@@ -155,11 +152,7 @@ PLUGIN_API int XPluginStart(char* outName, char* outSig, char* outDesc) {
 			}
 		});
 	list->appendMenuItem("Settings")->setOnClickHandler([](void* itemRef) {
-			if (XPIsWidgetVisible(settingsWidget)) {
-				XPHideWidget(settingsWidget);
-			} else {
-				XPShowWidget(settingsWidget);
-			}
+			settingsWidget->toggleVisible();
 		});
 
 	plugin->setupFlightLoop();
@@ -173,9 +166,8 @@ PLUGIN_API int XPluginStart(char* outName, char* outSig, char* outDesc) {
 
 PLUGIN_API void XPluginStop(void) {
 
-	XPDestroyWidget(settingsWidget, 1);
-
 	plugin.reset(nullptr);
+	settingsWidget.reset(nullptr);
 
 #ifdef _DEBUG
 
@@ -218,29 +210,61 @@ void draw_hello_world(XPLMWindowID inID, void* inRefcon) {
 
 }
 
+void setupWidgets() {
+	int screenLeft, screenRight, screenTop, screenBottom;
+	XPLMGetScreenBoundsGlobal(&screenLeft, &screenTop, &screenRight, &screenBottom);
 
+	int settingsLeft = 50 + screenLeft, settingsBottom = 400 + screenBottom, settingsWidth = 300, settingsHeight = 100;
+	Widget::Rect rect{ settingsLeft, settingsBottom + settingsHeight, settingsLeft + settingsWidth, settingsBottom };
+	
+	settingsWidget = std::make_unique<Widget>("Autothrottle Settings", rect, false, xpWidgetClass_MainWindow);
+	settingsWidget->setProperty(xpProperty_MainWindowHasCloseBoxes, true);
+	settingsWidget->setWidgetCallback([](XPWidgetMessage message, XPWidgetID widget, intptr_t param1, intptr_t param2) {
+			if (message == xpMessage_CloseButtonPushed) {
+				XPHideWidget(widget);
+				return 1;
+			}
+			return 0;
+		});
 
-int settingsWidgetFunc(XPWidgetMessage inMessage, XPWidgetID inWidget, intptr_t param1, intptr_t param2) {
-	if (inWidget == settingsWidget) {
-		if (inMessage == xpMessage_CloseButtonPushed) {
-			XPHideWidget(inWidget);
-			return 1;
-		}
-	}
-	else if (inWidget == settingsSubWidgets[6]) {
-		if (inMessage == xpMsg_PushButtonPressed) {
+	float kP, kI, kD;
+	plugin->pid().getGains(&kP, &kI, &kD);
+
+	rect.left = settingsLeft + 10;
+	rect.top = settingsBottom + 50;
+	rect.right = settingsLeft + 30;
+	rect.bottom = settingsBottom + 40;
+	settingsWidget->createChild("kPLabel", "kP", rect, true, xpWidgetClass_Caption);
+	rect.left += 70; rect.right += 70;
+	settingsWidget->createChild("kILabel", "kI", rect, true, xpWidgetClass_Caption);
+	rect.left += 70; rect.right += 70;
+	settingsWidget->createChild("kDLabel", "kD", rect, true, xpWidgetClass_Caption);
+
+	rect.left = settingsLeft + 30;
+	rect.right = settingsLeft + 70;
+	Widget* kPBox = settingsWidget->createChild("kPBox", std::to_string(kP).c_str(), rect, true, xpWidgetClass_TextField);
+	rect.left += 70; rect.right += 70;
+	Widget* kIBox = settingsWidget->createChild("kIBox", std::to_string(kI).c_str(), rect, true, xpWidgetClass_TextField);
+	rect.left += 70; rect.right += 70;
+	Widget* kDBox = settingsWidget->createChild("kDBox", std::to_string(kD).c_str(), rect, true, xpWidgetClass_TextField);
+
+	rect = { settingsLeft + settingsWidth - 55, settingsBottom + 25, settingsLeft + settingsWidth - 5, settingsBottom + 5 };
+	Widget* acceptBox = settingsWidget->createChild("acceptBox", "Save", rect, true, xpWidgetClass_Button);
+
+	acceptBox->setWidgetCallback([kPBox, kIBox, kDBox](XPWidgetMessage message, XPWidgetID widget, intptr_t param1, intptr_t param2) {
+		if (message == xpMsg_PushButtonPressed) {
 			char buffer[64];
 			std::string num;
 			float kP, kI, kD;
 			try {
 
-				XPGetWidgetDescriptor(settingsSubWidgets[1], buffer, 64);
+				XPGetWidgetDescriptor(kPBox->id(), buffer, 64);
 				num = buffer;
 				kP = std::stof(num);
-				XPGetWidgetDescriptor(settingsSubWidgets[3], buffer, 64);
+				XPGetWidgetDescriptor(kIBox->id(), buffer, 64);
 				num = buffer;
 				kI = std::stof(num);
-				XPGetWidgetDescriptor(settingsSubWidgets[5], buffer, 64);
+				XPGetWidgetDescriptor(kDBox->id(), buffer, 64);
 				num = buffer;
 				kD = std::stof(num);
 
@@ -251,43 +275,17 @@ int settingsWidgetFunc(XPWidgetMessage inMessage, XPWidgetID inWidget, intptr_t 
 				ss << "Pid gains: " << kP << " " << kI << " " << kD << std::endl;
 				XPLMDebugString(ss.str().c_str());
 #endif // _DEBUG
-			}
-			catch (const std::exception& e) {
+			} catch (const std::exception & e) {
 				XPLMDebugString(e.what());
 				XPLMDebugString("\n");
 				XPLMDebugString(num.c_str());
 				XPLMDebugString("\n");
 			}
-			XPHideWidget(settingsWidget);
+			Widget* parentWidget = WidgetRegistry::getWidget(widget)->getParent();
+			if (parentWidget) parentWidget->isVisible(false);
 			return 1;
 		}
-	}
-	return 0;
-}
-
-void setupWidgets() {
-	int screenLeft, screenRight, screenTop, screenBottom;
-	XPLMGetScreenBoundsGlobal(&screenLeft, &screenTop, &screenRight, &screenBottom);
-
-	int settingsLeft = 50 + screenLeft, settingsBottom = 400 + screenBottom, settingsWidth = 300, settingsHeight = 100;
-	settingsWidget = XPCreateWidget( settingsLeft,
-				settingsBottom + settingsHeight,
-				settingsLeft + settingsWidth,
-				settingsBottom,
-				0, "Autothrottle Settings", 1, NULL, xpWidgetClass_MainWindow);
-	XPSetWidgetProperty(settingsWidget, xpProperty_MainWindowHasCloseBoxes, 1);
-	XPAddWidgetCallback(settingsWidget, settingsWidgetFunc);
-
-	float kP, kI, kD;
-	plugin->pid().getGains(&kP, &kI, &kD);
-
-	settingsSubWidgets[0] = XPCreateWidget(settingsLeft + 10, settingsBottom + 50, settingsLeft + 30, settingsBottom + 40, 1, "kP", 0, settingsWidget, xpWidgetClass_Caption);
-	settingsSubWidgets[1] = XPCreateWidget(settingsLeft + 30, settingsBottom + 50, settingsLeft + 70, settingsBottom + 35, 1, std::to_string(kP).c_str(), 0, settingsWidget, xpWidgetClass_TextField);
-	settingsSubWidgets[2] = XPCreateWidget(settingsLeft + 80, settingsBottom + 50, settingsLeft + 100, settingsBottom + 40, 1, "kI", 0, settingsWidget, xpWidgetClass_Caption);
-	settingsSubWidgets[3] = XPCreateWidget(settingsLeft + 100, settingsBottom + 50, settingsLeft + 140, settingsBottom + 35, 1, std::to_string(kI).c_str(), 0, settingsWidget, xpWidgetClass_TextField);
-	settingsSubWidgets[4] = XPCreateWidget(settingsLeft + 150, settingsBottom + 50, settingsLeft + 170, settingsBottom + 40, 1, "kD", 0, settingsWidget, xpWidgetClass_Caption);
-	settingsSubWidgets[5] = XPCreateWidget(settingsLeft + 170, settingsBottom + 50, settingsLeft + 210, settingsBottom + 35, 1, std::to_string(kD).c_str(), 0, settingsWidget, xpWidgetClass_TextField);
-	settingsSubWidgets[6] = XPCreateWidget(settingsLeft + settingsWidth - 55, settingsBottom + 25, settingsLeft + settingsWidth - 5, settingsBottom + 5, 1, "Save", 0, settingsWidget, xpWidgetClass_Button);
-	XPAddWidgetCallback(settingsSubWidgets[6], settingsWidgetFunc);
+		return 0;
+	});
 
 }
