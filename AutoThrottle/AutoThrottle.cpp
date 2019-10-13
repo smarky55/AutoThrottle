@@ -218,29 +218,6 @@ void draw_hello_world(XPLMWindowID inID, void* inRefcon) {
 
 }
 
-void MenuHandler(void* inMenuRef, void* inItemRef) {
-	switch (reinterpret_cast<intptr_t>(inItemRef)) {
-	case 1: // Testing
-		if (plugin->isEnabled()) {
-			plugin->deactivateAutoThrottle();
-		}
-		else {
-			plugin->pid().setTarget(1500.0f);
-			plugin->activateAutoThrottle();
-		}
-		break;
-	case 2:
-		if (XPIsWidgetVisible(settingsWidget)) {
-			XPHideWidget(settingsWidget);
-		}
-		else {
-			XPShowWidget(settingsWidget);
-		}
-		break;
-	default:
-		break;
-	}
-}
 
 
 int settingsWidgetFunc(XPWidgetMessage inMessage, XPWidgetID inWidget, intptr_t param1, intptr_t param2) {
