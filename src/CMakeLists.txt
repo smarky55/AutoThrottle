@@ -19,7 +19,11 @@ if (WIN32)
     )
 elseif(APPLE)
     add_compile_definitions(APL=1)
-    set(xplane_sdk_LIBS "${xplane_sdk_SOURCE_DIR}/Libraries/Mac")
+    set(
+        xplane_sdk_LIBS 
+        "-framework ${xplane_sdk_SOURCE_DIR}/Libraries/Mac/XPLM.framework"
+        "-framework ${xplane_sdk_SOURCE_DIR}/Libraries/Mac/XPWidgets.framework"
+        )
 else()
     add_compile_definitions(LIN=1)
 endif()
