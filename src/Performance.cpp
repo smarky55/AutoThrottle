@@ -4,7 +4,7 @@
 
 #include <AutoThrottle/Performance.h>
 
-#include "XPLM/XPLMDataAccess.h"
+#include "XPLMDataAccess.h"
 
 #include <AutoThrottle/util.h>
 

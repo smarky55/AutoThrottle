@@ -5,7 +5,6 @@ file(GLOB SOURCE_LIST "./*.cpp")
 # Xplane sdk 
 set(
     xplane_sdk_INCLUDE_DIRS
-    "${xplane_sdk_SOURCE_DIR}/CHeaders"
     "${xplane_sdk_SOURCE_DIR}/CHeaders/XPLM"
     "${xplane_sdk_SOURCE_DIR}/CHeaders/Widgets"
 )

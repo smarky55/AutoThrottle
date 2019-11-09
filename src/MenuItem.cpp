@@ -4,7 +4,7 @@
 
 #include <AutoThrottle/MenuItem.h>
 
-#include <XPLM/XPLMMenus.h>
+#include <XPLMMenus.h>
 
 #include <AutoThrottle/Menu.h>
 
