@@ -2,9 +2,8 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#include "Widget.h"
-
-#include "WidgetRegistry.h"
+#include <AutoThrottle/Widget.h>
+#include <AutoThrottle/WidgetRegistry.h>
 
 #include <Widgets/XPWidgets.h>
 

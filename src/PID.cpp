@@ -4,7 +4,7 @@
 
 #include <algorithm>
 
-#include "pid.h"
+#include <AutoThrottle/PID.h>
 
 PID::PID() {
 	setPoint = 0.0;

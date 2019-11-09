@@ -2,7 +2,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#include "AutoThrottlePlugin.h"
+#include <AutoThrottle/AutoThrottlePlugin.h>
 
 #include <cereal/archives/json.hpp>
 
@@ -14,7 +14,7 @@
 #include <array>
 #include <fstream>
 
-#include "util.h"
+#include <AutoThrottle/util.h>
 
 AutoThrottlePlugin::AutoThrottlePlugin()
 	: m_timeDref(nullptr),

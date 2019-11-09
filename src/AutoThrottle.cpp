@@ -32,16 +32,16 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 #include <string>
 #include <sstream>
 
-#include "XPLM/XPLMDataAccess.h"
-#include "XPLM/XPLMDisplay.h"
-#include "XPLM/XPLMGraphics.h"
-#include "XPLM/XPLMMenus.h"
-#include "XPLM/XPLMPlugin.h"
-#include "XPLM/XPLMProcessing.h"
-#include "XPLM/XPLMUtilities.h"
+#include <XPLM/XPLMDataAccess.h>
+#include <XPLM/XPLMDisplay.h>
+#include <XPLM/XPLMGraphics.h>
+#include <XPLM/XPLMMenus.h>
+#include <XPLM/XPLMPlugin.h>
+#include <XPLM/XPLMProcessing.h>
+#include <XPLM/XPLMUtilities.h>
 
-#include "Widgets/XPWidgets.h"
-#include "Widgets/XPStandardWidgets.h"
+#include <Widgets/XPWidgets.h>
+#include <Widgets/XPStandardWidgets.h>
 
 #if LIN
 #include <GL/gl.h>
@@ -51,13 +51,13 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 #include <GL/gl.h>
 #endif
 
-#include "cereal/archives/json.hpp"
+#include <cereal/archives/json.hpp>
 
-#include "AutoThrottlePlugin.h"
-#include "Menu.h"
-#include "MenuItem.h"
-#include "Widget.h"
-#include "WidgetRegistry.h"
+#include <AutoThrottle/AutoThrottlePlugin.h>
+#include <AutoThrottle/Menu.h>
+#include <AutoThrottle/MenuItem.h>
+#include <AutoThrottle/Widget.h>
+#include <AutoThrottle/WidgetRegistry.h>
 
 // Window handle
 static XPLMWindowID window;
@@ -210,7 +210,7 @@ void draw_hello_world(XPLMWindowID inID, void* inRefcon) {
 
 }
 
-void setupWidgets() {
+void setupSettingsWidget() {
 	int screenLeft, screenRight, screenTop, screenBottom;
 	XPLMGetScreenBoundsGlobal(&screenLeft, &screenTop, &screenRight, &screenBottom);
 
@@ -287,5 +287,17 @@ void setupWidgets() {
 		}
 		return 0;
 	});
+
+}
+
+void setupAutopilotWidget()
+{
+	int screenLeft, screenRight, screenTop, screenBottom;
+	XPLMGetScreenBoundsGlobal(&screenLeft, &screenTop, &screenRight, &screenBottom);
+}
+
+void setupWidgets()
+{
+	setupSettingsWidget();
 
 }

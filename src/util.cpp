@@ -4,7 +4,7 @@
 
 #include <algorithm>
 
-#include "util.h"
+#include <AutoThrottle/util.h>
 
 float mToFt(float m) {
 	return m * 3.28084f;

@@ -2,11 +2,11 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#include "MenuItem.h"
+#include <AutoThrottle/MenuItem.h>
 
 #include <XPLM/XPLMMenus.h>
 
-#include "Menu.h"
+#include <AutoThrottle/Menu.h>
 
 MenuItem::MenuItem(std::string name, const Menu* parentMenu, size_t index)
 	: m_parentMenu(parentMenu),
