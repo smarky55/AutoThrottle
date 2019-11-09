@@ -4,6 +4,7 @@ on:
   push:
     branches: 
       - master
+      - test-actions
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
@@ -12,10 +13,10 @@ env:
 jobs:
   build:
 
-    runs-on: ${{ join(matrix.os, '-latest') }}
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows, ubuntu, macOS]
+        os: [windows-latest, ubuntu-latest, macOS-latest]
 
     steps:
     - uses: actions/checkout@v1
@@ -52,12 +53,12 @@ jobs:
     steps:
       - uses: actions/download-artifact@v1
         with:
-          name: windows
+          name: windows-latest
         
       - uses: actions/download-artifact@v1
         with:
-          name: macOS
+          name: macOS-latest
           
       - uses: actions/download-artifact@v1
         with:
-          name: ubuntu
+          name: ubuntu-latest
