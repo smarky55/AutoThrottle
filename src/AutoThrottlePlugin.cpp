@@ -6,10 +6,10 @@
 
 #include <cereal/archives/json.hpp>
 
-#include <XPLMDataAccess.h>
-#include <XPLMMenus.h>
-#include <XPLMProcessing.h>
-#include <XPLMUtilities.h>
+#include <XPLM/XPLMDataAccess.h>
+#include <XPLM/XPLMMenus.h>
+#include <XPLM/XPLMProcessing.h>
+#include <XPLM/XPLMUtilities.h>
 
 #include <array>
 #include <fstream>

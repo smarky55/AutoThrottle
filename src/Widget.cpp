@@ -5,7 +5,7 @@
 #include <AutoThrottle/Widget.h>
 #include <AutoThrottle/WidgetRegistry.h>
 
-#include <XPWidgets.h>
+#include <Widgets/XPWidgets.h>
 
 Widget::Widget(const std::string& descriptor, const Rect& rect, bool visible, int widgetClass, Widget* parent)
 	: m_rect(rect),

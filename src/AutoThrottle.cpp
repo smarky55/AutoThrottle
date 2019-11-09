@@ -32,16 +32,16 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 #include <string>
 #include <sstream>
 
-#include <XPLMDataAccess.h>
-#include <XPLMDisplay.h>
-#include <XPLMGraphics.h>
-#include <XPLMMenus.h>
-#include <XPLMPlugin.h>
-#include <XPLMProcessing.h>
-#include <XPLMUtilities.h>
+#include <XPLM/XPLMDataAccess.h>
+#include <XPLM/XPLMDisplay.h>
+#include <XPLM/XPLMGraphics.h>
+#include <XPLM/XPLMMenus.h>
+#include <XPLM/XPLMPlugin.h>
+#include <XPLM/XPLMProcessing.h>
+#include <XPLM/XPLMUtilities.h>
 
-#include <XPWidgets.h>
-#include <XPStandardWidgets.h>
+#include <Widgets/XPWidgets.h>
+#include <Widgets/XPStandardWidgets.h>
 
 #if LIN
 #include <GL/gl.h>
