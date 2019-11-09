@@ -12,7 +12,7 @@ env:
 jobs:
   build:
 
-    runs-on: ${{ join(matrix.os, '-latest' }}
+    runs-on: ${{ join(matrix.os, '-latest') }}
     strategy:
       matrix:
         os: [windows, ubuntu, macOS]
