@@ -34,6 +34,7 @@ set_target_properties(AutoThrottle
     ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/out/$<$<CONFIG:Debug>:>"
     LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/out/$<$<CONFIG:Debug>:>"
     RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/out/$<$<CONFIG:Debug>:>"
+    CXX_STANDARD 17
     PREFIX ""
     SUFFIX ".xpl"
 )
