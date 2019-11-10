@@ -29,7 +29,4 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(cereal xplane_sdk)
 
-file(GLOB_RECURSE xplane_files "${xplane_sdk_SOURCE_DIR}/*")
-message(STATUS "${xplane_files}")
-
 add_subdirectory(src)

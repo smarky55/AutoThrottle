@@ -23,9 +23,11 @@ else()
 endif()
 add_compile_definitions(XPLM200 XPLM210 XPLM300 XPLM301)
 
+find_package(OpenGL REQUIRED)
+
 add_library(AutoThrottle SHARED ${SOURCE_LIST} ${HEADER_LIST})
-target_link_libraries(AutoThrottle PRIVATE cereal ${XPLM} ${XPWIDGETS})
-target_include_directories(AutoThrottle PUBLIC ../include ${xplane_sdk_INCLUDE_DIRS})
+target_link_libraries(AutoThrottle PRIVATE cereal ${XPLM} ${XPWIDGETS} OpenGL::GL)
+target_include_directories(AutoThrottle PUBLIC ../include ${xplane_sdk_INCLUDE_DIRS} "${OPENGL_INCLUDE_DIR}")
 
 set_target_properties(AutoThrottle
     PROPERTIES
