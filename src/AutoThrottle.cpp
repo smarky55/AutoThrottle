@@ -76,9 +76,9 @@ std::unique_ptr<Widget> settingsWidget;
 
 
 PLUGIN_API int XPluginStart(char* outName, char* outSig, char* outDesc) {
-	strcpy_s(outName, 19, "AutoThrottlePlugin");
-	strcpy_s(outSig, 32, "smarky55.tbm.autothrottleplugin");
-	strcpy_s(outDesc, 57, "An autothrottle implementation for the Hotstart TBM 900.");
+	strncpy(outName, "AutoThrottlePlugin", 19);
+	strncpy(outSig, "smarky55.tbm.autothrottleplugin", 32);
+	strncpy(outDesc, "An autothrottle implementation for the Hotstart TBM 900.", 57);
 
 	XPLMEnableFeature("XPLM_USE_NATIVE_WIDGET_WINDOWS", true);
 	

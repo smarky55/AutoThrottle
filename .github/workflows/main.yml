@@ -4,6 +4,7 @@ on:
   push:
     branches: 
       - master
+      - test-actions
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
@@ -12,10 +13,10 @@ env:
 jobs:
   build:
 
-    runs-on: ${{ join(matrix.os, '-latest') }}
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows, ubuntu, macOS]
+        os: [windows-latest, ubuntu-latest, macOS-latest]
 
     steps:
     - uses: actions/checkout@v1
@@ -47,17 +48,34 @@ jobs:
         name: ${{ matrix.os }}
         path: build/out/AutoThrottle.xpl
   package:
-    runs-on: [windows]
-    needs: [build]
+    runs-on: windows-latest
+    needs: build
     steps:
-      - uses: actions/download-artifact@v1
+      - uses: actions/checkout@v1
+
+      - name: Download Windows Artifacts
+        uses: actions/download-artifact@v1
         with:
-          name: windows
+          name: windows-latest
+          path: out/AutoThrottle/win_x64
         
-      - uses: actions/download-artifact@v1
+      - name: Download Mac Artifacts
+        uses: actions/download-artifact@v1
         with:
-          name: macOS
+          name: macOS-latest
+          path: out/AutoThrottle/mac_x64
           
-      - uses: actions/download-artifact@v1
+      - name: Download Linux Artifacts
+        uses: actions/download-artifact@v1
         with:
-          name: ubuntu
+          name: ubuntu-latest
+          path: out/AutoThrottle/lin_x64
+
+      - name: Copy Resources
+        run: "xcopy resources out\\AutoThrottle /I /Y /S"
+
+      - name: Package Plugin
+        uses: actions/upload-artifact@v1
+        with:
+          name: AutoThrottle
+          path: out/AutoThrottle
