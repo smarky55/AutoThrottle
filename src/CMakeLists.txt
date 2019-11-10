@@ -23,7 +23,12 @@ else()
 endif()
 add_compile_definitions(XPLM200 XPLM210 XPLM300 XPLM301)
 
-find_package(OpenGL REQUIRED)
+find_package(OpenGL)
+if (NOT OpenGL_FOUND AND NOT WIN32)
+    message(STATUS "Fetching GL/gl.h from mesa library")
+    execute_process(COMMAND "sudo" "apt-get" "install" "-y" "mesa-common-dev" "libgl1-mesa-dev")
+    find_package(OpenGL REQUIRED)
+endif()
 
 add_library(AutoThrottle SHARED ${SOURCE_LIST} ${HEADER_LIST})
 target_link_libraries(AutoThrottle PRIVATE cereal ${XPLM} ${XPWIDGETS} OpenGL::GL)
