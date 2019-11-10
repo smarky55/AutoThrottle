@@ -51,22 +51,31 @@ jobs:
     runs-on: windows-latest
     needs: build
     steps:
-      - uses: actions/download-artifact@v1
+      - uses: actions/checkout@v1
+
+      - name: Download Windows Artifacts
+        uses: actions/download-artifact@v1
         with:
           name: windows-latest
-          path: build/AutoThrottle/win_x64
+          path: out/AutoThrottle/win_x64
         
-      - uses: actions/download-artifact@v1
+      - name: Download Mac Artifacts
+        uses: actions/download-artifact@v1
         with:
           name: macOS-latest
-          path: build/AutoThrottle/mac_x64
+          path: out/AutoThrottle/mac_x64
           
-      - uses: actions/download-artifact@v1
+      - name: Download Linux Artifacts
+        uses: actions/download-artifact@v1
         with:
           name: ubuntu-latest
-          path: build/AutoThrottle/lin_x64
+          path: out/AutoThrottle/lin_x64
 
-      - uses: actions/upload-artifact@v1
+      - name: Copy Resources
+        run: "xcopy AutoThrottle/resources/* out/AutoThrottle /I /Y /S"
+
+      - name: Package Plugin
+        uses: actions/upload-artifact@v1
         with:
           name: AutoThrottle
-          path: build/AutoThrottle
+          path: out/AutoThrottle
