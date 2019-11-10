@@ -48,17 +48,20 @@ jobs:
         name: ${{ matrix.os }}
         path: build/out/AutoThrottle.xpl
   package:
-    runs-on: [windows]
-    needs: [build]
+    runs-on: windows-latest
+    needs: build
     steps:
       - uses: actions/download-artifact@v1
         with:
           name: windows-latest
+          path: build/AutoThrottle/win_x64
         
       - uses: actions/download-artifact@v1
         with:
           name: macOS-latest
+          path: build/AutoThrottle/mac_x64
           
       - uses: actions/download-artifact@v1
         with:
           name: ubuntu-latest
+          path: build/AutoThrottle/lin_x64
