@@ -72,7 +72,7 @@ jobs:
           path: out/AutoThrottle/lin_x64
 
       - name: Copy Resources
-        run: "xcopy AutoThrottle\resources out\AutoThrottle /I /Y /S"
+        run: "xcopy AutoThrottle\\resources out\\AutoThrottle /I /Y /S"
 
       - name: Package Plugin
         uses: actions/upload-artifact@v1
