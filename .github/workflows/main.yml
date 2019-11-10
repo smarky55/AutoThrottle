@@ -65,3 +65,8 @@ jobs:
         with:
           name: ubuntu-latest
           path: build/AutoThrottle/lin_x64
+
+      - uses: actions/upload-artifact@v1
+        with:
+          name: AutoThrottle
+          path: build/AutoThrottle
