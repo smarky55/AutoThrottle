@@ -1,6 +1,9 @@
 
-file(GLOB HEADER_LIST "${AutoThrottle_SOURCE_DIR}/include/AutoThrottle/*.h")
-file(GLOB SOURCE_LIST "./*.cpp")
+file(GLOB_RECURSE HEADER_LIST "${AutoThrottle_SOURCE_DIR}/include/AutoThrottle/*.h")
+file(GLOB_RECURSE SOURCE_LIST "./*.cpp")
+
+source_group(TREE "${AutoThrottle_SOURCE_DIR}/include/AutoThrottle" PREFIX "Headers" FILES ${HEADER_LIST})
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX "Source" FILES ${SOURCE_LIST})
 
 # Xplane sdk 
 set(
