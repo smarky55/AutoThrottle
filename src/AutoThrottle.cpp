@@ -58,12 +58,9 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 #include <AutoThrottle/MenuItem.h>
 #include <AutoThrottle/Widget.h>
 #include <AutoThrottle/WidgetRegistry.h>
-
-// Window handle
-static XPLMWindowID window;
+#include <AutoThrottle/Window/CallbackWindow.h>
 
 // Callbacks
-void draw_hello_world(XPLMWindowID in_window_id, void* in_refcon);
 int dummy_mouse_handler(XPLMWindowID in_window_id, int x, int y, int is_down, void* in_refcon) { return 0; }
 XPLMCursorStatus dummy_cursor_status_handler(XPLMWindowID in_window_id, int x, int y, void* in_refcon) { return xplm_CursorDefault; }
 int dummy_wheel_handler(XPLMWindowID in_window_id, int x, int y, int wheel, int clicks, void* in_refcon) { return 0; }
@@ -73,6 +70,7 @@ void setupWidgets();
 
 std::unique_ptr<AutoThrottlePlugin> plugin;
 std::unique_ptr<Widget> settingsWidget;
+std::unique_ptr<CallbackWindow> testWindow;
 
 
 PLUGIN_API int XPluginStart(char* outName, char* outSig, char* outDesc) {
@@ -89,30 +87,35 @@ PLUGIN_API int XPluginStart(char* outName, char* outSig, char* outDesc) {
 // Test window
 #ifdef _DEBUG
 
-	XPLMCreateWindow_t params;
-	params.structSize = sizeof(params);
-	params.visible = 1;
-	params.drawWindowFunc = draw_hello_world;
-	params.handleMouseWheelFunc = dummy_wheel_handler;
-	params.handleMouseClickFunc = dummy_mouse_handler;
-	params.handleRightClickFunc = dummy_mouse_handler;
-	params.handleCursorFunc = dummy_cursor_status_handler;
-	params.handleKeyFunc = dummy_key_handler;
-	params.refcon = NULL;
-	params.layer = xplm_WindowLayerFloatingWindows;
-	params.decorateAsFloatingWindow = xplm_WindowDecorationRoundRectangle;
-
 	int left, bottom, right, top;
 	XPLMGetScreenBoundsGlobal(&left, &top, &right, &bottom);
-	params.left = left + 50;
-	params.bottom = bottom + 150;
-	params.right = params.left + 200;
-	params.top = params.bottom + 200;
 
-	window = XPLMCreateWindowEx(&params);
-	XPLMSetWindowPositioningMode(window, xplm_WindowPositionFree, -1);
-	XPLMSetWindowResizingLimits(window, 200, 200, 300, 300);
-	XPLMSetWindowTitle(window, "Test window");
+	Rect testwindowRect{ left + 50, bottom + 150, left + 250, bottom + 350 };
+
+	testWindow = std::make_unique<CallbackWindow>(
+		"Test window",
+		testwindowRect,
+		true,
+		xplm_WindowLayerFloatingWindows,
+		xplm_WindowDecorationRoundRectangle
+	);
+	testWindow->setPositioningMode(xplm_WindowPositionFree);
+	testWindow->setResizingLimits(200, 200, 300, 300);
+	testWindow->setDrawCallback([]() {
+			XPLMSetGraphicsState(0, 0, 0, 0, 1, 1, 0);
+
+			Rect geom = testWindow->getGeometry();
+
+			float col_white[] = { 1.0, 1.0, 1.0 };
+			XPLMDrawString(
+				col_white, 
+				geom.left + 10,
+				geom.top - 20, 
+				const_cast<char*>("Testing!"), 
+				NULL, 
+				xplmFont_Proportional
+			);
+		});
 
 #endif // DEBUG
 
@@ -161,58 +164,20 @@ PLUGIN_API int XPluginStart(char* outName, char* outSig, char* outDesc) {
 
 	setupWidgets();
 
-#if defined(_DEBUG)
-	return window != NULL;
-#else
 	return 1;
-#endif
 }
 
 PLUGIN_API void XPluginStop(void) {
 
 	plugin.reset(nullptr);
 	settingsWidget.reset(nullptr);
+	testWindow.reset(nullptr);
 
-#ifdef _DEBUG
-
-	XPLMDestroyWindow(window);
-	window = NULL;
-
-#endif // _DEBUG
 }
 
 PLUGIN_API int XPluginEnable(void) { return 1; }
 PLUGIN_API void XPluginDisable(void) {}
 PLUGIN_API void XPluginReceiveMessage(XPLMPluginID inFrom, int inMsg, void* inParam) {}
-
-#ifdef _DEBUG
-float debug_pidspeed;
-float debug_trq;
-float debug_throttle;
-#endif // _DEBUG
-
-
-void draw_hello_world(XPLMWindowID inID, void* inRefcon) {
-	XPLMSetGraphicsState(0, 0, 0, 0, 1, 1, 0);
-
-	int l, t, r, b;
-	XPLMGetWindowGeometry(inID, &l, &t, &r, &b);
-	float col_white[] = { 1.0, 1.0, 1.0 };
-	XPLMDrawString(col_white, l + 10, t - 20, const_cast<char*>("Testing!"), NULL, xplmFont_Proportional);
-
-#ifdef _DEBUG
-	std::stringstream ss;
-	ss << "Pidspeed: " << debug_pidspeed;
-	XPLMDrawString(col_white, l + 10, t - 40, const_cast<char*>(ss.str().c_str()), NULL, xplmFont_Proportional);
-	ss.str("");
-	ss << "Torque: " << debug_trq;
-	XPLMDrawString(col_white, l + 10, t - 60, const_cast<char*>(ss.str().c_str()), NULL, xplmFont_Proportional);
-	ss.str("");
-	ss << "Throttle: " << debug_throttle;
-	XPLMDrawString(col_white, l + 10, t - 80, const_cast<char*>(ss.str().c_str()), NULL, xplmFont_Proportional);
-#endif // _DEBUG
-
-}
 
 void setupSettingsWidget() {
 	int screenLeft, screenRight, screenTop, screenBottom;
