@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <AutoThrottle/util.h>
+
 #include <functional>
 #include <map>
 #include <memory>
@@ -13,14 +15,9 @@ using XPWidgetID = void*;
 using XPWidgetPropertyID = int;
 using XPWidgetMessage = int;
 
+
 class Widget {
 public:
-	struct Rect {
-		int left;
-		int top;
-		int right;
-		int bottom;
-	};
 
 	using Callback = std::function<int(XPWidgetMessage, XPWidgetID, intptr_t, intptr_t)>;
 

@@ -6,6 +6,26 @@
 
 #include <AutoThrottle/util.h>
 
+Rect operator+(const Rect& lhs, const Rect& rhs)
+{
+	Rect ret;
+	ret.left = lhs.left + rhs.left;
+	ret.top = lhs.top + rhs.top;
+	ret.right = lhs.right + rhs.right;
+	ret.bottom = lhs.bottom + rhs.bottom;
+	return ret;
+}
+
+Rect operator-(const Rect& lhs, const Rect& rhs)
+{
+	Rect ret;
+	ret.left = lhs.left - rhs.left;
+	ret.top = lhs.top - rhs.top;
+	ret.right = lhs.right - rhs.right;
+	ret.bottom = lhs.bottom - rhs.bottom;
+	return ret;
+}
+
 float mToFt(float m) {
 	return m * 3.28084f;
 }

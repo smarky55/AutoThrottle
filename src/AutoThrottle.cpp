@@ -219,7 +219,7 @@ void setupSettingsWidget() {
 	XPLMGetScreenBoundsGlobal(&screenLeft, &screenTop, &screenRight, &screenBottom);
 
 	int settingsLeft = 50 + screenLeft, settingsBottom = 400 + screenBottom, settingsWidth = 300, settingsHeight = 100;
-	Widget::Rect rect{ settingsLeft, settingsBottom + settingsHeight, settingsLeft + settingsWidth, settingsBottom };
+	Rect rect{ settingsLeft, settingsBottom + settingsHeight, settingsLeft + settingsWidth, settingsBottom };
 	
 	settingsWidget = std::make_unique<Widget>("Autothrottle Settings", rect, false, xpWidgetClass_MainWindow);
 	settingsWidget->setProperty(xpProperty_MainWindowHasCloseBoxes, true);
