@@ -5,7 +5,7 @@
 #pragma once
 
 #include <AutoThrottle/Window/Window.h>
-#include <AutoThrottle/util.h>
+#include <AutoThrottle/Util/geometry.h>
 
 #include <functional>
 #include <string>

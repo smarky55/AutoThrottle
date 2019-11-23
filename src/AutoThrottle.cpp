@@ -58,6 +58,7 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 #include <AutoThrottle/MenuItem.h>
 #include <AutoThrottle/Widget.h>
 #include <AutoThrottle/WidgetRegistry.h>
+#include <AutoThrottle/Util/geometry.h>
 #include <AutoThrottle/Window/CallbackWindow.h>
 
 // Callbacks
@@ -90,7 +91,7 @@ PLUGIN_API int XPluginStart(char* outName, char* outSig, char* outDesc) {
 	int left, bottom, right, top;
 	XPLMGetScreenBoundsGlobal(&left, &top, &right, &bottom);
 
-	Rect testwindowRect{ left + 50, bottom + 150, left + 250, bottom + 350 };
+	Rect testwindowRect{ left + 50, bottom + 350, left + 250, bottom + 150 };
 
 	testWindow = std::make_unique<CallbackWindow>(
 		"Test window",

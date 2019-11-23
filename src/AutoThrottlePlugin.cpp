@@ -14,7 +14,7 @@
 #include <array>
 #include <fstream>
 
-#include <AutoThrottle/util.h>
+#include <AutoThrottle/Util/util.h>
 
 AutoThrottlePlugin::AutoThrottlePlugin()
 	: m_timeDref(nullptr),

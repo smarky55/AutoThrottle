@@ -6,7 +6,7 @@
 
 #include "XPLM/XPLMDataAccess.h"
 
-#include <AutoThrottle/util.h>
+#include <AutoThrottle/Util/util.h>
 
 PerfTable::PerfTable() {}
 

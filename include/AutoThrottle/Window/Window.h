@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <AutoThrottle/util.h>
+#include <AutoThrottle/Util/geometry.h>
 
 #include <functional>
 #include <string>

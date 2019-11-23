@@ -4,16 +4,6 @@
 
 #pragma once
 
-struct Rect {
-	int left;
-	int top;
-	int right;
-	int bottom;
-};
-
-Rect operator+(const Rect& lhs, const Rect& rhs);
-Rect operator-(const Rect& lhs, const Rect& rhs);
-
 float mToFt(float m);
 
 float getIsaDev(float altFeet, float tempC);
