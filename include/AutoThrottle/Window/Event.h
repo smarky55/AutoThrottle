@@ -22,19 +22,30 @@ enum class MouseButton {
 	Right
 };
 
+enum class MouseAction {
+	Down,
+	Drag,
+	Up
+};
+
+using XPLMMouseStatus = int;
+
 class ClickEvent : public Event {
 public:
-	ClickEvent(Point point, MouseButton button);
+	ClickEvent(Point point, MouseButton button, MouseAction action);
+	ClickEvent(Point point, MouseButton button, XPLMMouseStatus xpMouseStatus);
 
 	static const std::string& type();
 	virtual const std::string& eventType() const override;
 
 	Point point() const { return m_point; }
 	MouseButton button() const { return m_button; }
+	MouseAction action() const { return m_action; }
 
 private:
 	Point m_point;
 	MouseButton m_button;
+	MouseAction m_action;
 };
 
 // -------------------------------------------------------------

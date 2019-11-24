@@ -4,6 +4,9 @@
 
 #include <AutoThrottle/Window/Window.h>
 
+#include <AutoThrottle/Window/Object.h>
+#include <AutoThrottle/Window/Event.h>
+
 #include <XPLM/XPLMDisplay.h>
 
 Window::Window(const Rect& rect, bool visible, XPLMWindowLayer layer, XPLMWindowDecoration decoration)
@@ -127,6 +130,11 @@ bool Window::isInFront() const
 	return XPLMIsWindowInFront(m_windowID);
 }
 
+void Window::addChild(std::unique_ptr<Object> child)
+{
+	m_rootObject->addChild(std::move(child));
+}
+
 void Window::draw(XPLMWindowID xpWindow, void* refcon)
 {
 	auto window = static_cast<Window*>(refcon);
@@ -165,25 +173,35 @@ XPLMCursorStatus Window::handleCursor(XPLMWindowID xpWindow, int x, int y, void*
 
 void Window::onDraw()
 {
-	// Draw window and children objects
+	// m_rect = m_rootObject->rect();
+	// TODO: Resize window to contents?
+	m_rootObject->draw({ m_rect.left, m_rect.bottom });
 }
 
 void Window::onHandleKey(char key, XPLMKeyFlags flags, char virtualKey, int losingFocus)
 {
+	KeyEvent event(key, flags);
+	m_rootObject->keyPress(event);
 }
 
 int Window::onHandleLeftClick(int x, int y, XPLMMouseStatus status)
 {
+	ClickEvent event({ x, y }, MouseButton::Left, status);
+	m_rootObject->mouseClick(event);
 	return 1;
 }
 
 int Window::onHandleRightClick(int x, int y, XPLMMouseStatus status)
 {
+	ClickEvent event({ x, y }, MouseButton::Right, status);
+	m_rootObject->mouseClick(event);
 	return 1;
 }
 
 int Window::onHandleMouseWheel(int x, int y, int wheel, int delta)
 {
+	WheelEvent event({ x, y }, delta, wheel);
+	m_rootObject->mouseWheel(event);
 	return 1;
 }
 

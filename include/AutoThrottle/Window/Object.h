@@ -19,12 +19,13 @@ using ObjectPtr = std::unique_ptr<Object>;
 
 class Object {
 public:
-	Object();
-	Object(Object* parent);
+	Object(Object* parent = nullptr);
 	virtual ~Object();
 
 	void setParent(Object* parent);
 	Object* parent();
+
+	void addChild(ObjectPtr child);
 
 	// Mouse click event, passes the event on to child objects
 	// Returns true if the event has been consumed by this or any child

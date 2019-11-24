@@ -7,6 +7,7 @@
 #include <AutoThrottle/Util/geometry.h>
 
 #include <functional>
+#include <memory>
 #include <string>
 
 using XPLMWindowID = void*;
@@ -16,6 +17,8 @@ using XPLMKeyFlags = int;
 using XPLMMouseStatus = int;
 using XPLMCursorStatus = int;
 using XPLMWindowPositioningMode = int;
+
+class Object;
 
 class Window {
 public:
@@ -52,6 +55,8 @@ public:
 	void bringToFront();
 	bool isInFront() const;
 
+	void addChild(std::unique_ptr<Object> child);
+
 protected:
 	static void draw(XPLMWindowID xpWindow, void* refcon);
 	static void handleKey(XPLMWindowID xpWindow, char key, XPLMKeyFlags flags, char virtualKey, void* refcon, int losingFocus);
@@ -71,4 +76,5 @@ protected:
 	Rect m_rect;
 	XPLMWindowID m_windowID;
 
+	std::unique_ptr<Object> m_rootObject;
 };

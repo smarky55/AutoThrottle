@@ -1,8 +1,31 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v.2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 #include <AutoThrottle/Window/Event.h>
 
-ClickEvent::ClickEvent(Point point, MouseButton button)
+ClickEvent::ClickEvent(Point point, MouseButton button, MouseAction action)
+	: m_point(point), m_button(button), m_action(action)
+{
+}
+
+ClickEvent::ClickEvent(Point point, MouseButton button, XPLMMouseStatus xpMouseStatus)
 	: m_point(point), m_button(button)
 {
+	switch (xpMouseStatus) {
+	case 1: // xplm_MouseDown
+		m_action = MouseAction::Down;
+		break;
+	case 2: // xplm_MouseDrag
+		m_action = MouseAction::Drag;
+		break;
+	case 3: // xplm_MouseUp
+		m_action = MouseAction::Up;
+		break;
+	default:
+		m_action = MouseAction::Down;
+		break;
+	}
 }
 
 const std::string& ClickEvent::type()

@@ -6,12 +6,7 @@
 
 #include <AutoThrottle/Window/Event.h>
 
-Object::Object()
-	: m_layoutDirty(true), m_parent(nullptr)
-{
-}
-
-Object::Object(Object* parent)
+Object::Object(Object* parent /* = nullptr */)
 	: m_layoutDirty(true), m_parent(parent)
 {
 }
@@ -28,6 +23,11 @@ void Object::setParent(Object* parent)
 Object* Object::parent()
 {
 	return m_parent;
+}
+
+void Object::addChild(ObjectPtr child)
+{
+	m_children.push_back(std::move(child));
 }
 
 bool Object::mouseClick(const ClickEvent& event)
@@ -72,6 +72,10 @@ bool Object::keyPress(const KeyEvent& event)
 void Object::draw(Point anchor)
 {
 	onDraw(anchor);
+	anchor += {m_margin.left, m_margin.bottom};
+	anchor += {m_border.left, m_border.bottom};
+	anchor += {m_padding.left, m_padding.bottom};
+
 	for (ObjectPtr& child : m_children) {
 		child->draw(anchor);
 	}
