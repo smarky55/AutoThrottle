@@ -61,6 +61,9 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 #include <AutoThrottle/Util/geometry.h>
 #include <AutoThrottle/Window/CallbackWindow.h>
 
+#include <AutoThrottle/Window/Window.h>
+#include <AutoThrottle/Window/Label.h>
+
 // Callbacks
 int dummy_mouse_handler(XPLMWindowID in_window_id, int x, int y, int is_down, void* in_refcon) { return 0; }
 XPLMCursorStatus dummy_cursor_status_handler(XPLMWindowID in_window_id, int x, int y, void* in_refcon) { return xplm_CursorDefault; }
@@ -71,7 +74,7 @@ void setupWidgets();
 
 std::unique_ptr<AutoThrottlePlugin> plugin;
 std::unique_ptr<Widget> settingsWidget;
-std::unique_ptr<CallbackWindow> testWindow;
+std::unique_ptr<Window> testWindow;
 
 
 PLUGIN_API int XPluginStart(char* outName, char* outSig, char* outDesc) {
@@ -81,42 +84,37 @@ PLUGIN_API int XPluginStart(char* outName, char* outSig, char* outDesc) {
 
 	XPLMEnableFeature("XPLM_USE_NATIVE_WIDGET_WINDOWS", true);
 	
-	XPLMDebugString("[AutoThrottle] Init\n");
+	XPLMDebugString("[AutoThrottle] Init.\n");
 
 	plugin = std::make_unique<AutoThrottlePlugin>();
-	
-// Test window
+
+
+	// Test window
 #ifdef _DEBUG
+
+	XPLMDebugString("[AutoThrottle] Create test window.\n");
 
 	int left, bottom, right, top;
 	XPLMGetScreenBoundsGlobal(&left, &top, &right, &bottom);
 
 	Rect testwindowRect{ left + 50, bottom + 350, left + 250, bottom + 150 };
 
-	testWindow = std::make_unique<CallbackWindow>(
+	testWindow = std::make_unique<Window>(
 		"Test window",
 		testwindowRect,
 		true,
 		xplm_WindowLayerFloatingWindows,
 		xplm_WindowDecorationRoundRectangle
-	);
+		);
 	testWindow->setPositioningMode(xplm_WindowPositionFree);
 	testWindow->setResizingLimits(200, 200, 300, 300);
-	testWindow->setDrawCallback([]() {
-			XPLMSetGraphicsState(0, 0, 0, 0, 1, 1, 0);
 
-			Rect geom = testWindow->getGeometry();
+	XPLMDebugString("[AutoThrottle] Create label.\n");
 
-			float col_white[] = { 1.0, 1.0, 1.0 };
-			XPLMDrawString(
-				col_white, 
-				geom.left + 10,
-				geom.top - 20, 
-				const_cast<char*>("Testing!"), 
-				NULL, 
-				xplmFont_Proportional
-			);
-		});
+	ObjectPtr label = std::make_unique<Label>("Testing!");
+	testWindow->addChild(std::move(label));
+
+	XPLMDebugString("[AutoThrottle] Test window complete!\n");
 
 #endif // DEBUG
 
@@ -143,10 +141,13 @@ PLUGIN_API int XPluginStart(char* outName, char* outSig, char* outDesc) {
 	XPLMDebugString(perfPath.c_str());
 
 	plugin->loadPerformance(perfPath);
-	
+
 	plugin->setupDatarefs();
-	
+
 	Menu* list = plugin->menu().menu();
+	list->appendMenuItem("Test Window")->setOnClickHandler([](void* itemRef) {
+			testWindow->isVisible(!testWindow->isVisible());
+		});
 	list->appendMenuItem("Test")->setOnClickHandler([](void* itemRef) {
 			if (plugin->isEnabled()) {
 				plugin->deactivateAutoThrottle();

@@ -32,6 +32,8 @@ Window::Window(const Rect& rect, bool visible, XPLMWindowLayer layer, XPLMWindow
 	params.handleCursorFunc = handleCursor;
 
 	m_windowID = XPLMCreateWindowEx(&params);
+
+	m_rootObject = std::make_unique<Object>();
 }
 
 Window::Window(const std::string& title, const Rect& rect, XPLMWindowLayer layer, XPLMWindowDecoration decoration, bool visible)
@@ -58,6 +60,8 @@ Window::Window(const std::string& title, const Rect& rect, XPLMWindowLayer layer
 
 	m_windowID = XPLMCreateWindowEx(&params);
 	XPLMSetWindowTitle(m_windowID, title.c_str());
+
+	m_rootObject = std::make_unique<Object>();
 }
 
 Window::~Window()
@@ -175,7 +179,8 @@ void Window::onDraw()
 {
 	// m_rect = m_rootObject->rect();
 	// TODO: Resize window to contents?
-	m_rootObject->draw({ m_rect.left, m_rect.bottom });
+	Rect windowGeometry = getGeometry();
+	m_rootObject->draw({ windowGeometry.left, windowGeometry.bottom });
 }
 
 void Window::onHandleKey(char key, XPLMKeyFlags flags, char virtualKey, int losingFocus)

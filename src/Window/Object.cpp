@@ -27,6 +27,7 @@ Object* Object::parent()
 
 void Object::addChild(ObjectPtr child)
 {
+	child->setParent(this);
 	m_children.push_back(std::move(child));
 }
 
