@@ -47,6 +47,17 @@ Rect operator-(const Rect& lhs, const Rect& rhs)
 	return ret;
 }
 
+Rect operator+(Rect lhs, const Point& rhs)
+{
+	lhs += rhs;
+	return lhs;
+}
+
+Rect operator+(const Point& lhs, Rect rhs)
+{
+	return rhs + lhs;
+}
+
 Rect::Rect()
 	: left(0), top(0), right(0), bottom(0)
 {
@@ -73,5 +84,21 @@ Rect& Rect::operator+=(const Rect& rhs)
 	top += rhs.top;
 	right += rhs.right;
 	bottom += rhs.bottom;
+	return *this;
+}
+
+Rect& Rect::operator+=(const Point& point)
+{
+	left += point.x;
+	top += point.y;
+	right += point.x;
+	bottom += point.y;
+	return *this;
+}
+
+Point& Point::operator+=(const Point& other)
+{
+	x += other.x;
+	y += other.y;
 	return *this;
 }

@@ -7,6 +7,8 @@
 struct Point {
 	int x;
 	int y;
+
+	Point& operator+=(const Point& other);
 };
 
 Point operator+(const Point& lhs, const Point& rhs);
@@ -26,6 +28,7 @@ public:
 	bool contains(Point point) const;
 
 	Rect& operator+=(const Rect& rhs);
+	Rect& operator+=(const Point& point);
 };
 
 // The smallest rect that contains a & b
@@ -33,3 +36,6 @@ Rect minimumRect(const Rect& a, const Rect& b);
 
 Rect operator+(const Rect& lhs, const Rect& rhs);
 Rect operator-(const Rect& lhs, const Rect& rhs);
+
+Rect operator+(Rect lhs, const Point& rhs);
+Rect operator+(const Point& lhs, Rect rhs);
