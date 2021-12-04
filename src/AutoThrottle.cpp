@@ -59,7 +59,6 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 #include <AutoThrottle/Widget.h>
 #include <AutoThrottle/WidgetRegistry.h>
 #include <AutoThrottle/Util/geometry.h>
-#include <AutoThrottle/Window/CallbackWindow.h>
 #include <AutoThrottle/Window/Util/FontUtil.h>
 
 #include <AutoThrottle/Window/Window.h>
