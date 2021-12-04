@@ -33,9 +33,11 @@ if (NOT OpenGL_FOUND AND NOT WIN32)
     find_package(OpenGL REQUIRED)
 endif()
 
+find_library(GLEW glew32s PATH "${glew_SOURCE_DIR}/lib/Release/x64")
+
 add_library(AutoThrottle SHARED ${SOURCE_LIST} ${HEADER_LIST})
-target_link_libraries(AutoThrottle PRIVATE cereal ${XPLM} ${XPWIDGETS} OpenGL::GL)
-target_include_directories(AutoThrottle PUBLIC ../include ${xplane_sdk_INCLUDE_DIRS} "${OPENGL_INCLUDE_DIR}")
+target_link_libraries(AutoThrottle PRIVATE cereal ${XPLM} ${XPWIDGETS} ${GLEW} OpenGL::GL)
+target_include_directories(AutoThrottle PUBLIC ../include ${xplane_sdk_INCLUDE_DIRS} "${OPENGL_INCLUDE_DIR}" "${stb_SOURCE_DIR}" "${glew_SOURCE_DIR}/include")
 
 set_target_properties(AutoThrottle
     PROPERTIES

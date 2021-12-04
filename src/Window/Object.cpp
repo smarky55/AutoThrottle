@@ -95,8 +95,8 @@ void Object::layout()
 			child->layout();
 		}
 		onLayout();
+		m_layoutDirty = false;
 	}
-	m_layoutDirty = false;
 }
 
 void Object::setPadding(const Rect& padding)

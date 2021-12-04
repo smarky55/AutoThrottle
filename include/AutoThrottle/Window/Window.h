@@ -31,9 +31,9 @@ public:
 	Window(
 		const std::string& title,
 		const Rect& rect,
+		bool visible,
 		XPLMWindowLayer layer,
-		XPLMWindowDecoration decoration,
-		bool visible
+		XPLMWindowDecoration decoration
 	);
 	virtual ~Window();
 

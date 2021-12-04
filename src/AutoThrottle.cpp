@@ -60,6 +60,7 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 #include <AutoThrottle/WidgetRegistry.h>
 #include <AutoThrottle/Util/geometry.h>
 #include <AutoThrottle/Window/CallbackWindow.h>
+#include <AutoThrottle/Window/Util/FontUtil.h>
 
 #include <AutoThrottle/Window/Window.h>
 #include <AutoThrottle/Window/Label.h>
@@ -104,14 +105,15 @@ PLUGIN_API int XPluginStart(char* outName, char* outSig, char* outDesc) {
 		testwindowRect,
 		true,
 		xplm_WindowLayerFloatingWindows,
-		xplm_WindowDecorationRoundRectangle
+		xplm_WindowDecorationSelfDecorated
 		);
 	testWindow->setPositioningMode(xplm_WindowPositionFree);
 	testWindow->setResizingLimits(200, 200, 300, 300);
 
 	XPLMDebugString("[AutoThrottle] Create label.\n");
 
-	ObjectPtr label = std::make_unique<Label>("Testing!");
+	auto label = std::make_unique<Label>("Testing!");
+	label->setTextHeight(500);
 	testWindow->addChild(std::move(label));
 
 	XPLMDebugString("[AutoThrottle] Test window complete!\n");
