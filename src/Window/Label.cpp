@@ -26,7 +26,7 @@ Label::Label(const std::string& text, Object* parent)
 	XPLMGenerateTextureNumbers(&m_textureId, 1);
 	char sysPath[512];
 	XPLMGetSystemPath(sysPath);
-	//FontManager::get()->createFont("Roboto-Regular", std::string(sysPath) + "Resources\\fonts\\Roboto-Regular.ttf");
+	FontManager::get()->createFont("Roboto-Regular", std::string(sysPath) + "Resources\\fonts\\Roboto-Regular.ttf");
 
 	glewInit();
 }
@@ -67,22 +67,11 @@ void Label::onDraw(Point anchor)
 	
 	glColor3f(1, 1, 1);
 	glBegin(GL_QUADS);
-	glTexCoord2f(0, texY); glVertex2f(rect.left, rect.top);
-	glTexCoord2f(0, 1); glVertex2f(rect.left, rect.bottom);
-	glTexCoord2f(texX, 1); glVertex2f(rect.right, rect.bottom);
-	glTexCoord2f(texX, texY); glVertex2f(rect.right, rect.top);
+	glTexCoord2f(0, 1); glVertex2f(rect.left, rect.top);
+	glTexCoord2f(0, texY); glVertex2f(rect.left, rect.bottom);
+	glTexCoord2f(texX, texY); glVertex2f(rect.right, rect.bottom);
+	glTexCoord2f(texX, 1); glVertex2f(rect.right, rect.top);
 	glEnd();
-
-	//int left, bottom, right, top;
-	//XPLMGetScreenBoundsGlobal(&left, &top, &right, &bottom);
-
-	//glColor3f(1, 1, 1);
-	//glBegin(GL_QUADS);
-	//glTexCoord2f(0, 0); glVertex2f(left + 50, bottom + 150);
-	//glTexCoord2f(0, 1); glVertex2f(left + 50, bottom + 350);
-	//glTexCoord2f(1, 1); glVertex2f(left + 250, bottom + 350);
-	//glTexCoord2f(1, 0); glVertex2f(left + 250, bottom + 150);
-	//glEnd();
 }
 
 void Label::onLayout()
@@ -95,57 +84,45 @@ void Label::onLayout()
 void Label::genTexture()
 {
 	XPLMDebugString("[AutoThrottle] Info: Generating label texture");
-	//std::vector<unsigned char> strBuffer;
-	//Font* font = FontManager::get()->getFont("Roboto-Regular");
-	//font->fillBitmap(strBuffer, m_text, m_textHeight);
-	//m_textWidth = strBuffer.size() / m_textHeight;
+	std::vector<unsigned char> strBuffer;
+	Font* font = FontManager::get()->getFont("Roboto-Regular");
+	font->fillBitmap(strBuffer, m_text, m_textHeight);
+	m_textWidth = strBuffer.size() / m_textHeight;
 
-	//size_t textureWidth = 1;
-	//while (textureWidth < m_textWidth) {
-	//	if (textureWidth == 2048) {
-	//		XPLMDebugString("[AutoThrottle] Warning: Creating a label texture wider than 2k!\n");
-	//	}
-	//	textureWidth = textureWidth << 1;
-	//}
+	size_t textureWidth = 1;
+	while (textureWidth < m_textWidth) {
+		if (textureWidth == 2048) {
+			XPLMDebugString("[AutoThrottle] Warning: Creating a label texture wider than 2k!\n");
+		}
+		textureWidth = textureWidth << 1;
+	}
 
-	//size_t textureHeight = 1;
-	//while (textureHeight < m_textHeight) {
-	//	if (textureHeight == 2048) {
-	//		XPLMDebugString("[AutoThrottle] Warning: Creating a label texture taller than 2k!\n");
-	//	}
-	//	textureHeight = textureHeight << 1;
-	//}
+	size_t textureHeight = 1;
+	while (textureHeight < m_textHeight) {
+		if (textureHeight == 2048) {
+			XPLMDebugString("[AutoThrottle] Warning: Creating a label texture taller than 2k!\n");
+		}
+		textureHeight = textureHeight << 1;
+	}
 
-	//// Resize texture to minimum requred
-	//bool neededResizing = false;
-	//if (textureWidth != m_textureWidth || textureHeight != m_textureHeight) {
-	//	neededResizing = true;
-	//	m_textureWidth = textureWidth;
-	//	m_textureHeight = textureHeight;
-	//	m_image.resize(textureWidth * textureHeight);		
-	//}
+	// Resize texture to minimum requred
+	bool neededResizing = false;
+	if (textureWidth != m_textureWidth || textureHeight != m_textureHeight) {
+		neededResizing = true;
+		m_textureWidth = textureWidth;
+		m_textureHeight = textureHeight;
+		m_image.resize(textureWidth * textureHeight);		
+	}
 
-	//// Fill with zeros
-	//std::fill(m_image.begin(), m_image.end(), 0);
+	// Fill with zeros
+	std::fill(m_image.begin(), m_image.end(), 0);
 
-	//for (size_t y = 0; y < m_textHeight; ++y) {
-	//	// Copy strbuffer into image
-	//	memcpy(m_image.data() + m_textureWidth * y, strBuffer.data() + m_textWidth * y, m_textWidth);
-	//}
-
-	constexpr unsigned char imageBuffer[] = {
-		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-		0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x00,
-		0x00, 0xFF, 0x00, 0x00, 0x00, 0x00, 0xFF, 0x00,
-		0x00, 0xFF, 0x00, 0xFF, 0xFF, 0x00, 0xFF, 0x00,
-		0x00, 0xFF, 0x00, 0xFF, 0xFF, 0x00, 0xFF, 0x00,
-		0x00, 0xFF, 0x00, 0x00, 0x00, 0x00, 0xFF, 0x00,
-		0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x00,
-		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-	};
+	for (size_t y = 0; y < m_textHeight; ++y) {
+		// Copy strbuffer into image
+		memcpy(m_image.data() + m_textureWidth * y, strBuffer.data() + m_textWidth * y, m_textWidth);
+	}
 
 	XPLMBindTexture2d(m_textureId, 0);
-
 
 	if (GLEW_ARB_texture_swizzle) {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_G, GL_RED);
@@ -155,46 +132,31 @@ void Label::genTexture()
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_B_EXT, GL_RED);
 	}
 
-	glTexImage2D(
-		GL_TEXTURE_2D,
-		0,
-		GL_RED,
-		8,
-		8,
-		0,
-		GL_RED,
-		GL_UNSIGNED_BYTE,
-		imageBuffer
-	);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-	//if (neededResizing) {
-	//	glTexImage2D(
-	//		GL_TEXTURE_2D,
-	//		0, 
-	//		GL_RED, 
-	//		m_textureWidth, 
-	//		m_textureHeight,
-	//		0, 
-	//		GL_RED, 
-	//		GL_UNSIGNED_BYTE,
-	//		m_image.data()
-	//	);
-	//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	//} else {
-	//	glTexSubImage2D(
-	//		GL_TEXTURE_2D,
-	//		0,
-	//		0,
-	//		0,
-	//		m_textureWidth,
-	//		m_textureHeight,
-	//		GL_RED,
-	//		GL_UNSIGNED_BYTE,
-	//		m_image.data()
-	//	);
-	//}
+	if (neededResizing) {
+		glTexImage2D(
+			GL_TEXTURE_2D,
+			0, 
+			GL_RED, 
+			m_textureWidth, 
+			m_textureHeight,
+			0, 
+			GL_RED, 
+			GL_UNSIGNED_BYTE,
+			m_image.data()
+		);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	} else {
+		glTexSubImage2D(
+			GL_TEXTURE_2D,
+			0,
+			0,
+			0,
+			m_textureWidth,
+			m_textureHeight,
+			GL_RED,
+			GL_UNSIGNED_BYTE,
+			m_image.data()
+		);
+	}
 }
