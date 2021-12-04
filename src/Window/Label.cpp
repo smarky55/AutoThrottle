@@ -63,14 +63,14 @@ void Label::onDraw(Point anchor)
 	XPLMBindTexture2d(m_textureId, 0);
 
 	float texX = static_cast<float>(m_textWidth) / m_textureWidth;
-	float texY = 1 - static_cast<float>(m_textHeight) / m_textureHeight;
+	float texY = static_cast<float>(m_textHeight) / m_textureHeight;
 	
 	glColor3f(1, 1, 1);
 	glBegin(GL_QUADS);
-	glTexCoord2f(0, 1); glVertex2f(rect.left, rect.top);
-	glTexCoord2f(0, texY); glVertex2f(rect.left, rect.bottom);
-	glTexCoord2f(texX, texY); glVertex2f(rect.right, rect.bottom);
-	glTexCoord2f(texX, 1); glVertex2f(rect.right, rect.top);
+	glTexCoord2f(0, texY); glVertex2f(rect.left, rect.top);
+	glTexCoord2f(0, 0); glVertex2f(rect.left, rect.bottom);
+	glTexCoord2f(texX, 0); glVertex2f(rect.right, rect.bottom);
+	glTexCoord2f(texX, texY); glVertex2f(rect.right, rect.top);
 	glEnd();
 }
 

@@ -112,7 +112,6 @@ PLUGIN_API int XPluginStart(char* outName, char* outSig, char* outDesc) {
 	XPLMDebugString("[AutoThrottle] Create label.\n");
 
 	auto label = std::make_unique<Label>("Testing!");
-	label->setTextHeight(500);
 	testWindow->addChild(std::move(label));
 
 	XPLMDebugString("[AutoThrottle] Test window complete!\n");
