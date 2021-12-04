@@ -31,7 +31,7 @@ Window::Window(
   params.right = m_rect.right;
   params.bottom = m_rect.bottom;
 
-  params.drawWindowFunc = draw;
+  params.drawWindowFunc = drawWindow;
   params.handleKeyFunc = handleKey;
   params.handleMouseClickFunc = handleLeftClick;
   params.handleRightClickFunc = handleRightClick;
@@ -106,29 +106,29 @@ void Window::addChild(std::unique_ptr<Object> child) {
   m_rootObject->addChild(std::move(child));
 }
 
-void Window::draw(XPLMWindowID xpWindow, void* refcon) {
+void Window::drawWindow(XPLMWindowID xpWindow, void* refcon) {
   auto window = static_cast<Window*>(refcon);
-  window->onDraw();
+  window->draw();
 }
 
 void Window::handleKey(XPLMWindowID xpWindow, char key, XPLMKeyFlags flags, char virtualKey, void* refcon, int losingFocus) {
   auto window = static_cast<Window*>(refcon);
-  window->onHandleKey(key, flags, virtualKey, losingFocus);
+  window->keyPress(key, flags, virtualKey, losingFocus);
 }
 
 int Window::handleLeftClick(XPLMWindowID xpWindow, int x, int y, XPLMMouseStatus status, void* refcon) {
   auto window = static_cast<Window*>(refcon);
-  return window->onHandleLeftClick(x, y, status);
+  return window->leftClick(x, y, status);
 }
 
 int Window::handleRightClick(XPLMWindowID xpWindow, int x, int y, XPLMMouseStatus status, void* refcon) {
   auto window = static_cast<Window*>(refcon);
-  return window->onHandleRightClick(x, y, status);
+  return window->rightClick(x, y, status);
 }
 
 int Window::handleMousewheel(XPLMWindowID xpWindow, int x, int y, int wheel, int delta, void* refcon) {
   auto window = static_cast<Window*>(refcon);
-  return window->onHandleMouseWheel(x, y, wheel, delta);
+  return window->scroll(x, y, wheel, delta);
 }
 
 XPLMCursorStatus Window::handleCursor(XPLMWindowID xpWindow, int x, int y, void* refcon) {
@@ -136,35 +136,70 @@ XPLMCursorStatus Window::handleCursor(XPLMWindowID xpWindow, int x, int y, void*
   return window->onHandleCursor(x, y);
 }
 
-void Window::onDraw() {
-  // m_rect = m_rootObject->rect();
+void Window::draw() {
   // TODO: Resize window to contents?
   Rect windowGeometry = getGeometry();
+
+  // Call virtual draw
+  onDraw();
+
+  // Draw children
   m_rootObject->layout();
   m_rootObject->draw({windowGeometry.left, windowGeometry.bottom});
 }
 
-void Window::onHandleKey(char key, XPLMKeyFlags flags, char virtualKey, int losingFocus) {
+void Window::keyPress(char key, XPLMKeyFlags flags, char virtualKey, int losingFocus) {
   KeyEvent event(key, flags);
-  m_rootObject->keyPress(event);
+
+  // Try to handle the key with the window
+  if (!onHandleKey(event)) {
+    // Pass keypress to root object
+    m_rootObject->keyPress(event);
+  }
 }
 
-int Window::onHandleLeftClick(int x, int y, XPLMMouseStatus status) {
+bool Window::leftClick(int x, int y, XPLMMouseStatus status) {
   ClickEvent event({x, y}, MouseButton::Left, status);
-  m_rootObject->mouseClick(event);
-  return 1;
+
+  if (!onClick(event)) {
+    m_rootObject->mouseClick(event);
+  }
+  return true;
 }
 
-int Window::onHandleRightClick(int x, int y, XPLMMouseStatus status) {
+bool Window::rightClick(int x, int y, XPLMMouseStatus status) {
   ClickEvent event({x, y}, MouseButton::Right, status);
-  m_rootObject->mouseClick(event);
-  return 1;
+
+  if (!onClick(event)) {
+    m_rootObject->mouseClick(event);
+  }
+  return true;
 }
 
-int Window::onHandleMouseWheel(int x, int y, int wheel, int delta) {
+bool Window::scroll(int x, int y, int wheel, int delta) {
   WheelEvent event({x, y}, delta, wheel);
-  m_rootObject->mouseWheel(event);
-  return 1;
+  
+  if (!onScroll(event)) {
+    m_rootObject->mouseWheel(event);
+  }
+  return true;
+}
+
+void Window::onDraw() {
+  // Do nothing
+}
+
+bool Window::onHandleKey(const KeyEvent& keyEvent) {
+  return false;
+
+}
+
+bool Window::onClick(const ClickEvent& clickEvent) {
+  return false;
+}
+
+bool Window::onScroll(const WheelEvent& wheelEvent) {
+  return false;
 }
 
 XPLMCursorStatus Window::onHandleCursor(int x, int y) {
