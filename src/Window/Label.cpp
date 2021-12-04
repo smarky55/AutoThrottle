@@ -65,8 +65,6 @@ void Label::onDraw(Point anchor)
 	float texX = static_cast<float>(m_textWidth) / m_textureWidth;
 	float texY = 1 - static_cast<float>(m_textHeight) / m_textureHeight;
 	
-	XPLMDrawString(colour, rect.left + 100, rect.bottom, (char*)m_text.c_str(), nullptr, xplmFont_Proportional);
-
 	glColor3f(1, 1, 1);
 	glBegin(GL_QUADS);
 	glTexCoord2f(0, texY); glVertex2f(rect.left, rect.top);
